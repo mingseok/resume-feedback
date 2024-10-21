@@ -1,0 +1,5 @@
+
+X	java:S125""<This block of commented-out lines of code should be removed.(‹Ÿë¼8Ô”µÖ§2
+W	java:S899R";Do something with the "boolean" value returned by "delete".(Å²ˆß8‡ª¶Ö§2
+k
+java:S4042R"NUse "java.nio.file.Files#delete" here for better messages on error conditions.(Å²ˆß8ˆª¶Ö§2

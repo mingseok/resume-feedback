@@ -1,0 +1,59 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.0-SNAPSHOT'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.jobprep'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// GPT
+	implementation 'io.github.flashvayne:chatgpt-spring-boot-starter:1.0.4'
+
+	// tika
+	implementation 'org.apache.tika:tika-core:1.24.1'
+
+	// OpenCV
+	implementation 'org.openpnp:opencv:4.5.1-2'
+	implementation 'net.sourceforge.tess4j:tess4j:5.4.0'
+
+	// jna
+	implementation 'net.java.dev.jna:jna:5.8.0'
+
+	// PDF 파일 처리를 위한 Apache PDFBox 의존성
+	implementation 'org.apache.pdfbox:pdfbox:2.0.29'
+
+	// thymeleaf
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

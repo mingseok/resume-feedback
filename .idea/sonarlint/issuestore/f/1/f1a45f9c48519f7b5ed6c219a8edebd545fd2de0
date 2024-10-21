@@ -1,0 +1,13 @@
+
+T
+java:S1135"2Complete the task associated to this TODO comment.(øù«úÿÿÿÿ8ø±Ã×§2
+\
+java:S1854;":Remove this useless assignment to local variable "client".(¨ÚÔıÿÿÿÿ8ù±Ã×§2
+{
+java:S2142["^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(”ı¾8ú±Ã×§2
+M
+java:S1481;"+Remove this unused "client" local variable.(¨ÚÔıÿÿÿÿ8û±Ã×§2
+L	java:S106H"+Replace this use of System.out by a logger.(®œ„ıÿÿÿÿ8ü±Ã×§2
+G	java:S106V"+Replace this use of System.out by a logger.( İùÑ8œ²Ã×§2
+L
+java:S1068"0Remove this unused "restTemplate" private field.(¡•ƒo8¡²Ã×§2
