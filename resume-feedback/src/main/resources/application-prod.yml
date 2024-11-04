@@ -20,3 +20,5 @@ logging:
     com.jobprep.resume_feedback: DEBUG
   file:
     name: logs/spring-boot-application.log
+tessdata:
+  prefix: src/main/resources/tessdata  # 실제 tessdata 디렉토리 경로

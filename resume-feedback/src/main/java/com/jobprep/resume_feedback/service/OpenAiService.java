@@ -24,8 +24,6 @@ public class OpenAiService {
     @Value("${openai.api.url}")
     private String apiUrl;
 
-    private final RestTemplate restTemplate = new RestTemplate();
-
     public String getDetailedFeedback(String content) {
         // TODO: 공고도 같이 올리면 어떨지에 대한 질문 작성.
 
