@@ -1,0 +1,22 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  thymeleaf:
+    prefix: classpath:/templates/
+    check-template-location: true
+    suffix: .html
+    mode: HTML
+    cache: false
+openai:
+  model: gpt-3.5-turbo
+  api:
+    key: sk-proj-NERydGeQkKevJ20FGXS7A2lWIuMQYsaMhI7oNscQMWV41EY4g-32ogpRELsukNZ7HrOc5FruhVT3BlbkFJvqyobFbbkrmoQKM_eWf6CyP6iTtjSFHDzxozL9wsgx7>
+    url: https://api.openai.com/v1/chat/completions
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    com.jobprep.resume_feedback: DEBUG
+  file:
+    name: logs/spring-boot-application.log

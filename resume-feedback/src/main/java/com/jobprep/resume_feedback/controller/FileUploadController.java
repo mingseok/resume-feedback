@@ -27,7 +27,7 @@ public class FileUploadController {
 
     @GetMapping("/")
     public String showHome() {
-        return "/index";
+        return "index";
     }
 
     @PostMapping("/upload")

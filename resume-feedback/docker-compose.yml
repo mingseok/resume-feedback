@@ -1,0 +1,17 @@
+version: '3'
+services:
+  application:
+    image: springboot-app  # 이미 빌드된 Spring Boot 이미지
+    ports:
+      - "8080:8080"  # 애플리케이션은 내부적으로 8080에서 실행
+
+  nginx:
+    image: nginx:latest  # 공식 nginx 이미지
+    ports:
+      - "80:80"   # HTTP 포트
+      - "443:443" # HTTPS 포트
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf # Nginx 설정 파일 마운트
+      - ./ssl:/etc/nginx/ssl  # IntelliJ 프로젝트 내의 ssl 폴더와 매핑
+    depends_on:
+      - application # Nginx는 Spring Boot 애플리케이션이 실행된 후에 실행

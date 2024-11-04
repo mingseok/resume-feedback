@@ -56,6 +56,7 @@ public class OcrService {
                 String pageText = tesseract.doOCR(image);
                 extractedText.append(pageText);
             }
+
         }
         return extractedText.toString();
     }
