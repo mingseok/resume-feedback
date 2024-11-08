@@ -33,6 +33,8 @@ public class FileUploadController {
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> handleFileUpload(@RequestParam("file") MultipartFile file) {
         try {
+            Thread.sleep(60000);
+
             // 이력서 내용 추출
             String fileType = file.getContentType();
             String resumeContent = null;
@@ -65,7 +67,7 @@ public class FileUploadController {
 
             return ResponseEntity.ok(finalDetailedFeedback);
 
-        } catch (IOException | TesseractException e) {
+        } catch (IOException | TesseractException | InterruptedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "파일 처리 실패"));
         }
     }
