@@ -1,0 +1,11 @@
+2024-11-11T14:45:24.577Z  INFO 96159 --- [Test worker] c.j.r.ResumeFeedbackApplicationTests     : Starting ResumeFeedbackApplicationTests using Java 17.0.12 with PID 96159 (started by ec2-user in /home/ec2-user/resume-feedback/resume-feedback)
+2024-11-11T14:45:24.595Z DEBUG 96159 --- [Test worker] c.j.r.ResumeFeedbackApplicationTests     : Running with Spring Boot v3.4.0-SNAPSHOT, Spring v6.2.0-SNAPSHOT
+2024-11-11T14:45:24.598Z  INFO 96159 --- [Test worker] c.j.r.ResumeFeedbackApplicationTests     : No active profile set, falling back to 1 default profile: "default"
+2024-11-11T14:45:24.670Z DEBUG 96159 --- [Test worker] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@6ae7deac
+2024-11-11T14:45:27.047Z  INFO 96159 --- [Test worker] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-11-11T14:45:27.190Z DEBUG 96159 --- [Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : 4 mappings in 'requestMappingHandlerMapping'
+2024-11-11T14:45:27.685Z DEBUG 96159 --- [Test worker] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2024-11-11T14:45:27.771Z DEBUG 96159 --- [Test worker] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-11-11T14:45:27.921Z DEBUG 96159 --- [Test worker] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-11-11T14:45:28.149Z  INFO 96159 --- [Test worker] c.j.r.ResumeFeedbackApplicationTests     : Started ResumeFeedbackApplicationTests in 4.268 seconds (process running for 6.889)
+2024-11-11T14:45:29.679Z DEBUG 96159 --- [SpringApplicationShutdownHook] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@6ae7deac, started on Mon Nov 11 14:45:24 UTC 2024
