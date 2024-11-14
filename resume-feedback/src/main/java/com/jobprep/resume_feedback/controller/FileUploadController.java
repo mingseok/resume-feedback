@@ -33,10 +33,14 @@ public class FileUploadController {
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> handleFileUpload(@RequestParam("file") MultipartFile file) {
         try {
+<<<<<<< HEAD
             System.out.println("파일 업로드 요청 시작"); // 추가된 로그
 
             Thread.sleep(60000);
             System.out.println("슬립 완료"); // 추가된 로그
+=======
+            Thread.sleep(60000);
+>>>>>>> 363f66eddb32d497e4041cf285d80f7dc6529fb4
 
             // 이력서 내용 추출
             String fileType = file.getContentType();
