@@ -3,6 +3,7 @@ package com.jobprep.resume_feedback.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,6 +25,7 @@ public class OpenAiService {
     @Value("${openai.api.url}")
     private String apiUrl;
 
+    @Cacheable("feedbackCache")
     public String getDetailedFeedback(String content) {
         // TODO: 공고도 같이 올리면 어떨지에 대한 질문 작성.
 

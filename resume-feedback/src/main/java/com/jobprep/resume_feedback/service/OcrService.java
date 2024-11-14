@@ -59,7 +59,7 @@ public class OcrService {
                 // 객체 풀에서 byte[]를 가져옴
                 byte[] buffer = byteArrayPool.getByteArray();
                 try {
-                    BufferedImage image = renderer.renderImageWithDPI(page, 300, ImageType.GRAY);
+                    BufferedImage image = renderer.renderImageWithDPI(page, 150, ImageType.GRAY);
                     String pageText = tesseract.doOCR(image);
                     extractedText.append(pageText);
                 } finally {
