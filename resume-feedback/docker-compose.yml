@@ -1,10 +1,16 @@
-version: '3'
 services:
   application:
     image: springboot-app  # 이미 빌드된 Spring Boot 이미지
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"  # 애플리케이션은 내부적으로 8080에서 실행
-
+      - "1099:1099"  # JMX 포트
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod  # 필요에 따라 프로파일 설정
+      - TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata  # Tesseract 데이터 경로 설정
+      - OPENAI_API_KEY=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
   nginx:
     image: nginx:latest  # 공식 nginx 이미지
     ports:
