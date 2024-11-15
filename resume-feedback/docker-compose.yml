@@ -1,6 +1,8 @@
 services:
   application:
     image: springboot-app  # 이미 빌드된 Spring Boot 이미지
+    mem_limit: 1024m
+    cpus: "1.0"
     build:
       context: .
       dockerfile: Dockerfile
@@ -8,6 +10,10 @@ services:
       - "8080:8080"  # 애플리케이션은 내부적으로 8080에서 실행
       - "1099:1099"  # JMX 포트
     environment:
+<<<<<<< HEAD
+=======
+      - JAVA_OPTS=-XX:+UseSerialGC -Xms512m -Xmx768m
+>>>>>>> 065c7b5 (Save local changes before rebase)
       - SPRING_PROFILES_ACTIVE=prod  # 필요에 따라 프로파일 설정
       - TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata  # Tesseract 데이터 경로 설정
       - OPENAI_API_KEY=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

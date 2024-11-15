@@ -1,7 +1,8 @@
 server:
   port: ${SERVER_PORT:8080}
   tomcat:
-    connection-timeout: 220s
+    connection-timeout: 10000ms
+    max-threads: 50
 
 spring:
   thymeleaf:
@@ -24,3 +25,11 @@ logging:
     name: logs/spring-boot-application.log
 tessdata:
   prefix: src/main/resources/tessdata  # 실제 tessdata 디렉토리 경로
+management:
+  endpoint:
+    health:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: []

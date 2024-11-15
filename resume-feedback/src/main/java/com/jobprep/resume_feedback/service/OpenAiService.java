@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -25,7 +26,13 @@ public class OpenAiService {
     @Value("${openai.api.url}")
     private String apiUrl;
 
+<<<<<<< HEAD
     private static final HttpClient httpClient = HttpClient.newHttpClient();  // 정적 필드로 HttpClient 생성
+=======
+    @Cacheable("feedbackCache")
+    public String getDetailedFeedback(String content) {
+        // TODO: 공고도 같이 올리면 어떨지에 대한 질문 작성.
+>>>>>>> 065c7b5 (Save local changes before rebase)
 
     @Cacheable("feedbackCache")
     public String getDetailedFeedback(String content) {
