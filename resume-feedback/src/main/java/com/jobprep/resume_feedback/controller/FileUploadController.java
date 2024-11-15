@@ -3,7 +3,6 @@ package com.jobprep.resume_feedback.controller;
 import com.jobprep.resume_feedback.service.OcrService;
 import com.jobprep.resume_feedback.service.OpenAiService;
 import lombok.RequiredArgsConstructor;
-import net.sourceforge.tess4j.TesseractException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -33,14 +32,7 @@ public class FileUploadController {
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> handleFileUpload(@RequestParam("file") MultipartFile file) {
         try {
-<<<<<<< HEAD
-            System.out.println("파일 업로드 요청 시작"); // 추가된 로그
-
-            Thread.sleep(60000);
-            System.out.println("슬립 완료"); // 추가된 로그
-=======
-            Thread.sleep(60000);
->>>>>>> 363f66eddb32d497e4041cf285d80f7dc6529fb4
+            System.out.println("파일 업로드 요청 시작");
 
             // 이력서 내용 추출
             String fileType = file.getContentType();
@@ -49,27 +41,31 @@ public class FileUploadController {
             if ("text/plain".equals(fileType)) {
                 resumeContent = new String(file.getBytes(), StandardCharsets.UTF_8);
             } else if ("application/pdf".equals(fileType)) {
-                File tempFile = File.createTempFile("uploaded-", "." + file.getOriginalFilename());
-                file.transferTo(tempFile);
+                File tempFile = File.createTempFile("uploaded-", ".pdf");
+                try {
+                    file.transferTo(tempFile);
+                    System.out.println("PDF 파일을 OCR 처리 중");
 
-                System.out.println("PDF 파일을 OCR 처리 중"); // 추가된 로그
-
-                resumeContent = ocrService.extractTextFromPdfWithOcr(tempFile);
-                tempFile.delete();  // 임시 파일 삭제
+                    resumeContent = ocrService.extractTextFromPdfWithOcr(tempFile);
+                } finally {
+                    if (tempFile.exists()) {
+                        tempFile.delete();  // 임시 파일 삭제
+                    }
+                }
             }
 
             if (resumeContent == null) {
                 return ResponseEntity.badRequest().body(Map.of("error", "지원하지 않는 파일 형식입니다"));
             }
 
-            System.out.println("피드백 요청 시작"); // 추가된 로그
+            System.out.println("피드백 요청 시작");
 
             // 피드백 요청 및 결과 파싱
             String initialFeedback = openAiService.getDetailedFeedback(resumeContent);
             Map<String, String> categorizedFeedback = openAiService.parseFeedbackByCategory(initialFeedback);
 
+            System.out.println("카테고리별 추가 평가 요청 시작");
 
-            System.out.println("카테고리별 추가 평가 요청 시작"); // 추가된 로그
             // 각 항목별로 추가 평가 요청 및 결과 저장
             Map<String, String> finalDetailedFeedback = new HashMap<>();
             for (Map.Entry<String, String> entry : categorizedFeedback.entrySet()) {
@@ -81,7 +77,10 @@ public class FileUploadController {
 
             return ResponseEntity.ok(finalDetailedFeedback);
 
-        } catch (IOException | TesseractException | InterruptedException e) {
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "파일 처리 중 IO 오류 발생"));
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "파일 처리 실패"));
         }
     }

@@ -25,18 +25,16 @@ public class OpenAiService {
     @Value("${openai.api.url}")
     private String apiUrl;
 
+    private static final HttpClient httpClient = HttpClient.newHttpClient();  // 정적 필드로 HttpClient 생성
+
     @Cacheable("feedbackCache")
     public String getDetailedFeedback(String content) {
-        // TODO: 공고도 같이 올리면 어떨지에 대한 질문 작성.
-
         String[] questions = {
-                "기본 정보는 적절한가? 이력서에 이름, 연락처, 이메일 주소 등이 포함되어 있는지 확인하고, 적절한 형식으로 작성되었는지 평가해주세요.",
-                "기술 스택은 잘 구성되어 있는가? 이력서에 나열된 기술 스택이 직무에 적합한지, 그리고 충분히 설명되었는지 평가해주세요.",
-                "경력 사항은 충분한가? 직무와 관련된 경력 사항이 충분히 기술되어 있는지, 주요 성과가 포함되어 있는지 평가해주세요.",
-                "포트폴리오는 잘 작성되어 있는가? 포트폴리오가 포함되어 있다면, 직무와 관련된 프로젝트를 충분히 보여주고 있는지 평가해주세요.",
-                "대외활동은 관련성이 있는가? 이력서에 기재된 대외활동이 지원하는 직무와 관련이 있는지, 어떤 경험이 도움이 되는지 평가해주세요.",
-                "자격증 여부는 어떠한가? 직무에 필요한 자격증이 있는지, 자격증이 직무와 관련된 내용인지 평가해주세요.",
-                "자기소개서는 자연스러운가? 이력서에 포함된 자기소개서가 지원하는 직무에 적합하게 작성되었는지, 그리고 본인의 강점을 잘 보여주는지 평가해주세요."
+                "이력서의 기본 정보(이름, 연락처, 이메일 등)가 적절하게 포함되고 형식이 올바른지 평가해주세요.",
+                "기술 스택이 직무에 적합하고 충분히 설명되었는지 평가해주세요. 주요 기술에 대한 이해를 보여주는지 확인해주세요.",
+                "경력 사항과 포트폴리오가 직무와 연관성이 높고 주요 성과가 잘 드러나 있는지 평가해주세요.",
+                "대외활동과 자격증이 직무와 관련성이 있으며, 지원자의 역량을 보완하는지 평가해주세요.",
+                "자기소개서가 직무와 적합하고, 지원자의 강점과 가치관을 잘 전달하고 있는지 평가해주세요."
         };
 
         String questionsPrompt = Arrays.stream(questions)
@@ -56,7 +54,6 @@ public class OpenAiService {
             String requestBody = createRequestBody(text);
 
             // HTTP 요청 생성
-            HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(apiUrl))
                     .header("Content-Type", "application/json")
@@ -64,8 +61,6 @@ public class OpenAiService {
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
 
-            // HTTP 클라이언트 생성 및 요청 보내기
-            HttpClient httpClient = HttpClient.newHttpClient();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             // 응답 본문 출력

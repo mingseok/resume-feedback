@@ -1,34 +1,48 @@
-<<<<<<< HEAD
-2024-11-11T14:45:24.577Z  INFO 96159 --- [Test worker] c.j.r.ResumeFeedbackApplicationTests     : Starting ResumeFeedbackApplicationTests using Java 17.0.12 with PID 96159 (started by ec2-user in /home/ec2-user/resume-feedback/resume-feedback)
-2024-11-11T14:45:24.595Z DEBUG 96159 --- [Test worker] c.j.r.ResumeFeedbackApplicationTests     : Running with Spring Boot v3.4.0-SNAPSHOT, Spring v6.2.0-SNAPSHOT
-2024-11-11T14:45:24.598Z  INFO 96159 --- [Test worker] c.j.r.ResumeFeedbackApplicationTests     : No active profile set, falling back to 1 default profile: "default"
-2024-11-11T14:45:24.670Z DEBUG 96159 --- [Test worker] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@6ae7deac
-2024-11-11T14:45:27.047Z  INFO 96159 --- [Test worker] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
-2024-11-11T14:45:27.190Z DEBUG 96159 --- [Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : 4 mappings in 'requestMappingHandlerMapping'
-2024-11-11T14:45:27.685Z DEBUG 96159 --- [Test worker] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
-2024-11-11T14:45:27.771Z DEBUG 96159 --- [Test worker] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2024-11-11T14:45:27.921Z DEBUG 96159 --- [Test worker] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2024-11-11T14:45:28.149Z  INFO 96159 --- [Test worker] c.j.r.ResumeFeedbackApplicationTests     : Started ResumeFeedbackApplicationTests in 4.268 seconds (process running for 6.889)
-2024-11-11T14:45:29.679Z DEBUG 96159 --- [SpringApplicationShutdownHook] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@6ae7deac, started on Mon Nov 11 14:45:24 UTC 2024
-=======
-2024-11-14T15:40:39.795+09:00  INFO 7124 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Starting ResumeFeedbackApplication using Java 17.0.10 with PID 7124 (C:\feedback\resume-feedback\out\production\classes started by MTM in C:\feedback\resume-feedback)
-2024-11-14T15:40:39.804+09:00 DEBUG 7124 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Running with Spring Boot v3.4.0-SNAPSHOT, Spring v6.2.0-RC2
-2024-11-14T15:40:39.806+09:00  INFO 7124 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : No active profile set, falling back to 1 default profile: "default"
-2024-11-14T15:40:39.884+09:00  INFO 7124 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2024-11-14T15:40:39.884+09:00  INFO 7124 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2024-11-14T15:40:40.979+09:00  INFO 7124 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2024-11-14T15:40:40.993+09:00  INFO 7124 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2024-11-14T15:40:40.994+09:00  INFO 7124 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
-2024-11-14T15:40:41.042+09:00  INFO 7124 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2024-11-14T15:40:41.042+09:00  INFO 7124 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1157 ms
-2024-11-14T15:40:41.165+09:00  INFO 7124 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
-2024-11-14T15:40:41.256+09:00 DEBUG 7124 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 4 mappings in 'requestMappingHandlerMapping'
-2024-11-14T15:40:41.305+09:00 DEBUG 7124 --- [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
-2024-11-14T15:40:41.335+09:00 DEBUG 7124 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2024-11-14T15:40:41.411+09:00 DEBUG 7124 --- [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2024-11-14T15:40:41.485+09:00  INFO 7124 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
-2024-11-14T15:40:41.521+09:00  INFO 7124 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2024-11-14T15:40:41.531+09:00  INFO 7124 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Started ResumeFeedbackApplication in 2.506 seconds (process running for 3.478)
-2024-11-14T15:40:49.461+09:00  INFO 7124 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2024-11-14T15:40:49.633+09:00  INFO 7124 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
->>>>>>> 363f66eddb32d497e4041cf285d80f7dc6529fb4
+2024-11-15T18:59:17.437+09:00  INFO 13992 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Starting ResumeFeedbackApplication using Java 17.0.10 with PID 13992 (C:\feedback\resume-feedback\out\production\classes started by MTM in C:\feedback\resume-feedback)
+2024-11-15T18:59:17.442+09:00 DEBUG 13992 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Running with Spring Boot v3.4.0-SNAPSHOT, Spring v6.2.0-RC2
+2024-11-15T18:59:17.443+09:00  INFO 13992 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : No active profile set, falling back to 1 default profile: "default"
+2024-11-15T18:59:17.493+09:00  INFO 13992 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-11-15T18:59:17.494+09:00  INFO 13992 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-11-15T18:59:18.414+09:00  INFO 13992 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-15T18:59:18.427+09:00  INFO 13992 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-15T18:59:18.427+09:00  INFO 13992 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2024-11-15T18:59:18.471+09:00  INFO 13992 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-15T18:59:18.472+09:00  INFO 13992 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 978 ms
+2024-11-15T18:59:18.600+09:00  INFO 13992 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-11-15T18:59:18.682+09:00 DEBUG 13992 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 4 mappings in 'requestMappingHandlerMapping'
+2024-11-15T18:59:18.743+09:00 DEBUG 13992 --- [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2024-11-15T18:59:18.769+09:00 DEBUG 13992 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-11-15T18:59:18.854+09:00 DEBUG 13992 --- [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-11-15T18:59:18.932+09:00  INFO 13992 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2024-11-15T18:59:18.958+09:00  INFO 13992 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-15T18:59:18.967+09:00  INFO 13992 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Started ResumeFeedbackApplication in 2.053 seconds (process running for 2.869)
+2024-11-15T18:59:29.968+09:00  INFO 13992 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-15T18:59:29.968+09:00  INFO 13992 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-11-15T18:59:29.969+09:00 DEBUG 13992 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2024-11-15T18:59:29.969+09:00 DEBUG 13992 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2024-11-15T18:59:29.969+09:00 DEBUG 13992 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2024-11-15T18:59:29.970+09:00 DEBUG 13992 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@5275264f
+2024-11-15T18:59:29.971+09:00 DEBUG 13992 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@6f5572ea
+2024-11-15T18:59:29.971+09:00 DEBUG 13992 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2024-11-15T18:59:29.972+09:00  INFO 13992 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2024-11-15T18:59:29.985+09:00 DEBUG 13992 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/", parameters={}
+2024-11-15T18:59:29.995+09:00 DEBUG 13992 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.jobprep.resume_feedback.controller.FileUploadController#showHome()
+2024-11-15T18:59:30.015+09:00 DEBUG 13992 --- [http-nio-8080-exec-1] o.s.w.s.v.ContentNegotiatingViewResolver : Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2024-11-15T18:59:30.267+09:00 DEBUG 13992 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-11-15T18:59:30.441+09:00 DEBUG 13992 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/favicon.ico", parameters={}
+2024-11-15T18:59:30.445+09:00 DEBUG 13992 --- [http-nio-8080-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2024-11-15T18:59:30.448+09:00 DEBUG 13992 --- [http-nio-8080-exec-6] o.s.w.s.r.ResourceHttpRequestHandler     : Resource not found
+2024-11-15T18:59:30.453+09:00 DEBUG 13992 --- [http-nio-8080-exec-6] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]
+2024-11-15T18:59:30.453+09:00 DEBUG 13992 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 404 NOT_FOUND
+2024-11-15T18:59:30.458+09:00 DEBUG 13992 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for GET "/error", parameters={}
+2024-11-15T18:59:30.459+09:00 DEBUG 13992 --- [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2024-11-15T18:59:30.475+09:00 DEBUG 13992 --- [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json;q=0.8', given [image/avif, image/webp, image/apng, image/svg+xml, image/*, */*;q=0.8] and supported [application/json, application/*+json]
+2024-11-15T18:59:30.478+09:00 DEBUG 13992 --- [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Fri Nov 15 18:59:30 KST 2024, status=404, error=Not Found, trace=org.springframework.web. (truncated)...]
+2024-11-15T18:59:30.517+09:00 DEBUG 13992 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 404
+2024-11-15T18:59:41.507+09:00 DEBUG 13992 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : POST "/upload", parameters={multipart}
+2024-11-15T18:59:41.609+09:00 DEBUG 13992 --- [http-nio-8080-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.jobprep.resume_feedback.controller.FileUploadController#handleFileUpload(MultipartFile)
+2024-11-15T19:01:52.622+09:00 DEBUG 13992 --- [http-nio-8080-exec-5] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-11-15T19:01:52.624+09:00 DEBUG 13992 --- [http-nio-8080-exec-5] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{자기소개서=자기소개서를 작성할 때에는 다음과 같은 요소들을 고려해야 합니다:<EOL><EOL>1. 목적과 목표: 자기소개서를 작성하는 목적과 입사를 희망하는 회사에 전하고 싶은 메시지를 명확히 (truncated)...]
+2024-11-15T19:01:52.626+09:00 DEBUG 13992 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-11-15T19:02:09.044+09:00  INFO 13992 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2024-11-15T19:02:09.188+09:00  INFO 13992 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
