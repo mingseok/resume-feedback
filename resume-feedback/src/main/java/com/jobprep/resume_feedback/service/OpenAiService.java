@@ -26,14 +26,8 @@ public class OpenAiService {
     @Value("${openai.api.url}")
     private String apiUrl;
 
-<<<<<<< HEAD
     private static final HttpClient httpClient = HttpClient.newHttpClient();  // 정적 필드로 HttpClient 생성
-=======
-    @Cacheable("feedbackCache")
-    public String getDetailedFeedback(String content) {
-        // TODO: 공고도 같이 올리면 어떨지에 대한 질문 작성.
->>>>>>> 065c7b5 (Save local changes before rebase)
-
+    
     @Cacheable("feedbackCache")
     public String getDetailedFeedback(String content) {
         String[] questions = {
