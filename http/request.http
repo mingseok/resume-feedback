@@ -1,0 +1,13 @@
+### upload
+
+POST http://localhost:8080/upload
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="이력서.pdf"
+Content-Type: application/pdf
+
+< ./이력서.pdf
+--WebAppBoundary--
+
+###

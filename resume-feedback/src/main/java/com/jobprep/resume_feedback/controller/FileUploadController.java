@@ -38,9 +38,13 @@ public class FileUploadController {
             String fileType = file.getContentType();
             String resumeContent = null;
 
-            if ("text/plain".equals(fileType)) {
-                resumeContent = new String(file.getBytes(), StandardCharsets.UTF_8);
-            } else if ("application/pdf".equals(fileType)) {
+            System.out.println("파일 형식: " + fileType);
+
+            if (fileType == null || fileType.isBlank()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "파일 형식을 확인할 수 없습니다"));
+            }
+
+            if (fileType.contains("application/pdf")) {
                 File tempFile = File.createTempFile("uploaded-", ".pdf");
                 try {
                     file.transferTo(tempFile);
@@ -52,6 +56,8 @@ public class FileUploadController {
                         tempFile.delete();  // 임시 파일 삭제
                     }
                 }
+            } else if (fileType.contains("text/plain")) {
+                resumeContent = new String(file.getBytes(), StandardCharsets.UTF_8);
             }
 
             if (resumeContent == null) {
