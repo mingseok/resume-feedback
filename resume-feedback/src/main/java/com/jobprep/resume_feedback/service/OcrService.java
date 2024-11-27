@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,11 +34,14 @@ public class OcrService {
         try (PDDocument document = PDDocument.load(pdfFile)) {
             PDFRenderer renderer = new PDFRenderer(document);
             for (int page = 0; page < document.getNumberOfPages(); ++page) {
-                BufferedImage image = renderer.renderImage(page);
+                BufferedImage image = renderer.renderImageWithDPI(page, 10, ImageType.BINARY);
                 String pageText = tesseract.doOCR(image);
                 extractedText.append(pageText);
             }
-            return extractedText.toString();
+
+            String result = extractedText.toString();
+            System.out.println("result = " + result);
+            return result;
         } catch (TesseractException | IOException e) {
             throw new RuntimeException(e);
         }

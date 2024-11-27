@@ -18,4 +18,4 @@ logging:
   file:
     name: logs/spring-boot-application.log  # 로그 파일
 tessdata:
-  prefix: classpath:/tessdata  # 실제 tessdata 디렉토리 경로
+  prefix: src/main/resources/tessdata  # 실제 tessdata 디렉토리 경로

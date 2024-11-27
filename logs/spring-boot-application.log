@@ -432,3 +432,281 @@ Native library (darwin-aarch64/libtesseract.dylib) not found in resource path (/
 2024-11-26T21:49:07.456+09:00 DEBUG 17410 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
 2024-11-26T21:49:07.457+09:00 DEBUG 17410 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Tue Nov 26 21:49:07 KST 2024, status=500, error=Internal Server Error, trace=java.lang.Un (truncated)...]
 2024-11-26T21:49:07.480+09:00 DEBUG 17410 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 500
+2024-11-26T22:07:59.477+09:00  INFO 2808 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Starting ResumeFeedbackApplication using Java 17.0.9 with PID 2808 (C:\Users\user\IdeaProjects\resume-feedback\resume-feedback\out\production\classes started by user in C:\Users\user\IdeaProjects\resume-feedback)
+2024-11-26T22:07:59.479+09:00 DEBUG 2808 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Running with Spring Boot v3.4.0-SNAPSHOT, Spring v6.2.0
+2024-11-26T22:07:59.480+09:00  INFO 2808 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : No active profile set, falling back to 1 default profile: "default"
+2024-11-26T22:07:59.524+09:00  INFO 2808 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-11-26T22:07:59.524+09:00  INFO 2808 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-11-26T22:08:00.541+09:00  INFO 2808 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-26T22:08:00.553+09:00  INFO 2808 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-26T22:08:00.554+09:00  INFO 2808 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.33]
+2024-11-26T22:08:00.612+09:00  INFO 2808 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-26T22:08:00.612+09:00  INFO 2808 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1087 ms
+2024-11-26T22:08:00.869+09:00  INFO 2808 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-11-26T22:08:00.935+09:00 DEBUG 2808 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 4 mappings in 'requestMappingHandlerMapping'
+2024-11-26T22:08:00.993+09:00 DEBUG 2808 --- [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2024-11-26T22:08:01.017+09:00 DEBUG 2808 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-11-26T22:08:01.093+09:00 DEBUG 2808 --- [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-11-26T22:08:01.184+09:00  INFO 2808 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2024-11-26T22:08:01.206+09:00  INFO 2808 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-26T22:08:01.213+09:00  INFO 2808 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Started ResumeFeedbackApplication in 2.227 seconds (process running for 3.501)
+2024-11-26T22:08:13.280+09:00  INFO 2808 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-26T22:08:13.280+09:00  INFO 2808 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-11-26T22:08:13.280+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2024-11-26T22:08:13.281+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2024-11-26T22:08:13.281+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2024-11-26T22:08:13.282+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@2d9e0b16
+2024-11-26T22:08:13.282+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@2177d135
+2024-11-26T22:08:13.282+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2024-11-26T22:08:13.283+09:00  INFO 2808 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2024-11-26T22:08:13.292+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : POST "/upload", parameters={multipart}
+2024-11-26T22:08:13.334+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.jobprep.resume_feedback.controller.FileUploadController#handleFileUpload(MultipartFile)
+2024-11-26T22:08:14.327+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Failed to complete request: jakarta.servlet.ServletException: Handler dispatch failed: java.lang.Error: Invalid memory access
+2024-11-26T22:08:14.328+09:00 ERROR 2808 --- [http-nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed: java.lang.Error: Invalid memory access] with root cause
+
+java.lang.Error: Invalid memory access
+	at com.sun.jna.Native.invokePointer(Native Method) ~[jna-5.8.0.jar:5.8.0 (b0)]
+	at com.sun.jna.Function.invokePointer(Function.java:497) ~[jna-5.8.0.jar:5.8.0 (b0)]
+	at com.sun.jna.Function.invoke(Function.java:441) ~[jna-5.8.0.jar:5.8.0 (b0)]
+	at com.sun.jna.Function.invoke(Function.java:361) ~[jna-5.8.0.jar:5.8.0 (b0)]
+	at com.sun.jna.Library$Handler.invoke(Library.java:265) ~[jna-5.8.0.jar:5.8.0 (b0)]
+	at jdk.proxy2/jdk.proxy2.$Proxy72.TessBaseAPIGetUTF8Text(Unknown Source) ~[na:na]
+	at net.sourceforge.tess4j.Tesseract.getOCRText(Tesseract.java:532) ~[tess4j-5.4.0.jar:5.4.0]
+	at net.sourceforge.tess4j.Tesseract.doOCR(Tesseract.java:337) ~[tess4j-5.4.0.jar:5.4.0]
+	at net.sourceforge.tess4j.Tesseract.doOCR(Tesseract.java:309) ~[tess4j-5.4.0.jar:5.4.0]
+	at net.sourceforge.tess4j.Tesseract.doOCR(Tesseract.java:290) ~[tess4j-5.4.0.jar:5.4.0]
+	at net.sourceforge.tess4j.Tesseract.doOCR(Tesseract.java:274) ~[tess4j-5.4.0.jar:5.4.0]
+	at com.jobprep.resume_feedback.service.OcrService.extractTextFromPdfWithOcr(OcrService.java:37) ~[classes/:na]
+	at com.jobprep.resume_feedback.controller.FileUploadController.handleFileUpload(FileUploadController.java:53) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1088) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:978) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.33.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.33.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+
+2024-11-26T22:08:14.340+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for POST "/error", parameters={multipart}
+2024-11-26T22:08:14.341+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2024-11-26T22:08:14.365+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-11-26T22:08:14.366+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Tue Nov 26 22:08:14 KST 2024, status=500, error=Internal Server Error, trace=java.lang.Er (truncated)...]
+2024-11-26T22:08:14.404+09:00 DEBUG 2808 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 500
+2024-11-26T22:09:57.946+09:00  INFO 2808 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2024-11-26T22:09:58.198+09:00  INFO 2808 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2024-11-26T22:10:04.574+09:00  INFO 6692 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Starting ResumeFeedbackApplication using Java 17.0.9 with PID 6692 (C:\Users\user\IdeaProjects\resume-feedback\resume-feedback\out\production\classes started by user in C:\Users\user\IdeaProjects\resume-feedback)
+2024-11-26T22:10:04.575+09:00 DEBUG 6692 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Running with Spring Boot v3.4.0-SNAPSHOT, Spring v6.2.0
+2024-11-26T22:10:04.576+09:00  INFO 6692 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : No active profile set, falling back to 1 default profile: "default"
+2024-11-26T22:10:04.619+09:00  INFO 6692 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-11-26T22:10:04.619+09:00  INFO 6692 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-11-26T22:10:05.633+09:00  INFO 6692 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-26T22:10:05.645+09:00  INFO 6692 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-26T22:10:05.646+09:00  INFO 6692 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.33]
+2024-11-26T22:10:05.707+09:00  INFO 6692 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-26T22:10:05.708+09:00  INFO 6692 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1088 ms
+2024-11-26T22:10:05.952+09:00  INFO 6692 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-11-26T22:10:06.020+09:00 DEBUG 6692 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 4 mappings in 'requestMappingHandlerMapping'
+2024-11-26T22:10:06.077+09:00 DEBUG 6692 --- [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2024-11-26T22:10:06.098+09:00 DEBUG 6692 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-11-26T22:10:06.179+09:00 DEBUG 6692 --- [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-11-26T22:10:06.268+09:00  INFO 6692 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2024-11-26T22:10:06.291+09:00  INFO 6692 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-26T22:10:06.299+09:00  INFO 6692 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Started ResumeFeedbackApplication in 2.189 seconds (process running for 2.898)
+2024-11-26T22:10:16.506+09:00  INFO 6692 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-26T22:10:16.506+09:00  INFO 6692 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-11-26T22:10:16.506+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2024-11-26T22:10:16.506+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2024-11-26T22:10:16.506+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2024-11-26T22:10:16.507+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@3923d755
+2024-11-26T22:10:16.507+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@7473c046
+2024-11-26T22:10:16.507+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2024-11-26T22:10:16.507+09:00  INFO 6692 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-11-26T22:10:16.516+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : POST "/upload", parameters={multipart}
+2024-11-26T22:10:16.556+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.jobprep.resume_feedback.controller.FileUploadController#handleFileUpload(MultipartFile)
+2024-11-26T22:10:17.093+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Failed to complete request: jakarta.servlet.ServletException: Handler dispatch failed: java.lang.Error: Invalid memory access
+2024-11-26T22:10:17.094+09:00 ERROR 6692 --- [http-nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed: java.lang.Error: Invalid memory access] with root cause
+
+java.lang.Error: Invalid memory access
+	at com.sun.jna.Native.invokePointer(Native Method) ~[jna-5.8.0.jar:5.8.0 (b0)]
+	at com.sun.jna.Function.invokePointer(Function.java:497) ~[jna-5.8.0.jar:5.8.0 (b0)]
+	at com.sun.jna.Function.invoke(Function.java:441) ~[jna-5.8.0.jar:5.8.0 (b0)]
+	at com.sun.jna.Function.invoke(Function.java:361) ~[jna-5.8.0.jar:5.8.0 (b0)]
+	at com.sun.jna.Library$Handler.invoke(Library.java:265) ~[jna-5.8.0.jar:5.8.0 (b0)]
+	at jdk.proxy2/jdk.proxy2.$Proxy72.TessBaseAPIGetUTF8Text(Unknown Source) ~[na:na]
+	at net.sourceforge.tess4j.Tesseract.getOCRText(Tesseract.java:532) ~[tess4j-5.4.0.jar:5.4.0]
+	at net.sourceforge.tess4j.Tesseract.doOCR(Tesseract.java:337) ~[tess4j-5.4.0.jar:5.4.0]
+	at net.sourceforge.tess4j.Tesseract.doOCR(Tesseract.java:309) ~[tess4j-5.4.0.jar:5.4.0]
+	at net.sourceforge.tess4j.Tesseract.doOCR(Tesseract.java:290) ~[tess4j-5.4.0.jar:5.4.0]
+	at net.sourceforge.tess4j.Tesseract.doOCR(Tesseract.java:274) ~[tess4j-5.4.0.jar:5.4.0]
+	at com.jobprep.resume_feedback.service.OcrService.extractTextFromPdfWithOcr(OcrService.java:37) ~[classes/:na]
+	at com.jobprep.resume_feedback.controller.FileUploadController.handleFileUpload(FileUploadController.java:53) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1088) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:978) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.33.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.33.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+
+2024-11-26T22:10:17.105+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for POST "/error", parameters={multipart}
+2024-11-26T22:10:17.107+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2024-11-26T22:10:17.128+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-11-26T22:10:17.130+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Tue Nov 26 22:10:17 KST 2024, status=500, error=Internal Server Error, trace=java.lang.Er (truncated)...]
+2024-11-26T22:10:17.171+09:00 DEBUG 6692 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 500
+2024-11-26T22:13:44.357+09:00  INFO 6692 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2024-11-26T22:13:44.604+09:00  INFO 6692 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2024-11-26T22:13:51.314+09:00  INFO 18132 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Starting ResumeFeedbackApplication using Java 17.0.9 with PID 18132 (C:\Users\user\IdeaProjects\resume-feedback\resume-feedback\out\production\classes started by user in C:\Users\user\IdeaProjects\resume-feedback)
+2024-11-26T22:13:51.316+09:00 DEBUG 18132 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Running with Spring Boot v3.4.0-SNAPSHOT, Spring v6.2.0
+2024-11-26T22:13:51.317+09:00  INFO 18132 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : No active profile set, falling back to 1 default profile: "default"
+2024-11-26T22:13:51.363+09:00  INFO 18132 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-11-26T22:13:51.363+09:00  INFO 18132 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-11-26T22:13:52.360+09:00  INFO 18132 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-26T22:13:52.373+09:00  INFO 18132 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-26T22:13:52.373+09:00  INFO 18132 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.33]
+2024-11-26T22:13:52.432+09:00  INFO 18132 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-26T22:13:52.432+09:00  INFO 18132 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1068 ms
+2024-11-26T22:13:52.662+09:00  INFO 18132 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-11-26T22:13:52.728+09:00 DEBUG 18132 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 4 mappings in 'requestMappingHandlerMapping'
+2024-11-26T22:13:52.784+09:00 DEBUG 18132 --- [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2024-11-26T22:13:52.807+09:00 DEBUG 18132 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-11-26T22:13:52.888+09:00 DEBUG 18132 --- [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-11-26T22:13:52.979+09:00  INFO 18132 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2024-11-26T22:13:53.002+09:00  INFO 18132 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-26T22:13:53.010+09:00  INFO 18132 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Started ResumeFeedbackApplication in 2.167 seconds (process running for 2.854)
+2024-11-26T22:14:04.302+09:00  INFO 18132 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-26T22:14:04.302+09:00  INFO 18132 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-11-26T22:14:04.302+09:00 DEBUG 18132 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2024-11-26T22:14:04.303+09:00 DEBUG 18132 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2024-11-26T22:14:04.303+09:00 DEBUG 18132 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2024-11-26T22:14:04.303+09:00 DEBUG 18132 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@2d9e0b16
+2024-11-26T22:14:04.304+09:00 DEBUG 18132 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@2177d135
+2024-11-26T22:14:04.304+09:00 DEBUG 18132 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2024-11-26T22:14:04.304+09:00  INFO 18132 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2024-11-26T22:14:04.312+09:00 DEBUG 18132 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : POST "/upload", parameters={multipart}
+2024-11-26T22:14:04.354+09:00 DEBUG 18132 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.jobprep.resume_feedback.controller.FileUploadController#handleFileUpload(MultipartFile)
+2024-11-26T22:14:04.966+09:00  WARN 18132 --- [http-nio-8080-exec-1] o.a.pdfbox.pdmodel.font.PDSimpleFont     : No Unicode mapping for g0 (0) in font null
+2024-11-26T22:14:38.830+09:00 DEBUG 18132 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-11-26T22:14:38.832+09:00 DEBUG 18132 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{자기소개서=자기소개서 내용이 전반적으로 자세하고 구체적으로 작성되어 있어 좋습니다. 하지만 몇 가지 추가적인 평가를 제공해드리겠습니다. <EOL><EOL>1. 경험과 역량 강조: 자기소개서에서 (truncated)...]
+2024-11-26T22:14:38.840+09:00 DEBUG 18132 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-11-26T22:18:20.105+09:00  INFO 18132 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2024-11-26T22:18:20.357+09:00  INFO 18132 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2024-11-26T22:18:27.525+09:00  INFO 3188 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Starting ResumeFeedbackApplication using Java 17.0.9 with PID 3188 (C:\Users\user\IdeaProjects\resume-feedback\resume-feedback\out\production\classes started by user in C:\Users\user\IdeaProjects\resume-feedback)
+2024-11-26T22:18:27.527+09:00 DEBUG 3188 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Running with Spring Boot v3.4.0-SNAPSHOT, Spring v6.2.0
+2024-11-26T22:18:27.528+09:00  INFO 3188 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : No active profile set, falling back to 1 default profile: "default"
+2024-11-26T22:18:27.570+09:00  INFO 3188 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-11-26T22:18:27.570+09:00  INFO 3188 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-11-26T22:18:28.539+09:00  INFO 3188 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-26T22:18:28.552+09:00  INFO 3188 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-26T22:18:28.552+09:00  INFO 3188 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.33]
+2024-11-26T22:18:28.610+09:00  INFO 3188 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-26T22:18:28.610+09:00  INFO 3188 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1040 ms
+2024-11-26T22:18:28.838+09:00  INFO 3188 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-11-26T22:18:28.900+09:00 DEBUG 3188 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 4 mappings in 'requestMappingHandlerMapping'
+2024-11-26T22:18:28.954+09:00 DEBUG 3188 --- [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2024-11-26T22:18:28.975+09:00 DEBUG 3188 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-11-26T22:18:29.055+09:00 DEBUG 3188 --- [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-11-26T22:18:29.139+09:00  INFO 3188 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2024-11-26T22:18:29.161+09:00  INFO 3188 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-26T22:18:29.169+09:00  INFO 3188 --- [restartedMain] c.j.r.ResumeFeedbackApplication          : Started ResumeFeedbackApplication in 2.111 seconds (process running for 2.782)
+2024-11-26T22:18:36.979+09:00  INFO 3188 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-26T22:18:36.979+09:00  INFO 3188 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-11-26T22:18:36.980+09:00 DEBUG 3188 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2024-11-26T22:18:36.980+09:00 DEBUG 3188 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2024-11-26T22:18:36.980+09:00 DEBUG 3188 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2024-11-26T22:18:36.980+09:00 DEBUG 3188 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@61440153
+2024-11-26T22:18:36.981+09:00 DEBUG 3188 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@e911ddd
+2024-11-26T22:18:36.981+09:00 DEBUG 3188 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2024-11-26T22:18:36.982+09:00  INFO 3188 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2024-11-26T22:18:36.990+09:00 DEBUG 3188 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : POST "/upload", parameters={multipart}
+2024-11-26T22:18:37.028+09:00 DEBUG 3188 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.jobprep.resume_feedback.controller.FileUploadController#handleFileUpload(MultipartFile)
+2024-11-26T22:18:37.619+09:00  WARN 3188 --- [http-nio-8080-exec-1] o.a.pdfbox.pdmodel.font.PDSimpleFont     : No Unicode mapping for g0 (0) in font null
+2024-11-26T22:19:09.126+09:00 DEBUG 3188 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-11-26T22:19:09.127+09:00 DEBUG 3188 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{자기소개서=1. 구체적 경험과 성과를 더 강조해보세요: 자기소개서에는 자신의 경험과 성과를 구체적으로 언급하여 자신을 더욱 강력하게 소개할 수 있습니다. 예를 들어, 이전 직장에 (truncated)...]
+2024-11-26T22:19:09.137+09:00 DEBUG 3188 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-11-26T22:22:36.187+09:00  INFO 3188 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2024-11-26T22:22:36.434+09:00  INFO 3188 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
