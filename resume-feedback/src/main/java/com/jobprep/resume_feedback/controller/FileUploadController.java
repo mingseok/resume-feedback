@@ -1,93 +1,78 @@
 package com.jobprep.resume_feedback.controller;
 
-import com.jobprep.resume_feedback.service.OcrService;
 import com.jobprep.resume_feedback.service.OpenAiService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller
-@RequiredArgsConstructor
+@RestController
 public class FileUploadController {
 
     private final OpenAiService openAiService;
-    private final OcrService ocrService;
 
-    @GetMapping("/")
-    public String showHome() {
-        return "index";
+    public FileUploadController(OpenAiService openAiService) {
+        this.openAiService = openAiService;
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<Map<String, String>> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public Map<String, String> uploadFileWithDetailedQuestions(@RequestParam("file") MultipartFile file) {
+        long startTime = System.currentTimeMillis(); // 요청 시작 시간
+        StringBuilder logSummary = new StringBuilder(); // 간소화된 로그 저장
+
         try {
-            System.out.println("파일 업로드 요청 시작");
+            logSummary.append("\n========= 응답 시간 측정 시작 =========\n");
 
-            // 이력서 내용 추출
-            String fileType = file.getContentType();
-            String resumeContent = null;
+            // 1. 원본 PDF 파일 크기 가져오기
+            long pdfFileSize = file.getSize(); // 바이트 단위 크기
+            logSummary.append(String.format("PDF 파일 크기: %d bytes\n", pdfFileSize));
 
-            System.out.println("파일 형식: " + fileType);
+            // 2. PDF 텍스트 추출
+            long pdfStartTime = System.currentTimeMillis();
+            String pdfContent = extractTextFromPdf(file); // PDF 텍스트 추출
+            long pdfEndTime = System.currentTimeMillis(); // PDF 추출 완료 시간
+            logSummary.append(String.format("PDF 처리 시간: %d ms\n", pdfEndTime - pdfStartTime));
 
-            if (fileType == null || fileType.isBlank()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "파일 형식을 확인할 수 없습니다"));
-            }
+            // 3. 추출된 텍스트 크기 가져오기
+            int textLength = pdfContent.length(); // 문자 수
+            byte[] textBytes = pdfContent.getBytes("UTF-8");
+            int textByteSize = textBytes.length;
+            logSummary.append(String.format("추출된 텍스트 크기: %d bytes\n", textByteSize));
 
-            if (fileType.contains("application/pdf")) {
-                File tempFile = File.createTempFile("uploaded-", ".pdf");
-                try {
-                    file.transferTo(tempFile);
-                    System.out.println("PDF 파일을 OCR 처리 중");
+            // 4. OpenAI API 호출
+            long apiStartTime = System.currentTimeMillis();
+            Map<String, String> feedback = openAiService.getFeedbackForSections(pdfContent, logSummary);
+            long apiEndTime = System.currentTimeMillis();
+            logSummary.append(String.format("OpenAI API 전체 처리 시간: %d ms\n", apiEndTime - apiStartTime));
 
-                    resumeContent = ocrService.extractTextFromPdfWithOcr(tempFile);
-                } finally {
-                    if (tempFile.exists()) {
-                        tempFile.delete();  // 임시 파일 삭제
-                    }
-                }
-            } else if (fileType.contains("text/plain")) {
-                resumeContent = new String(file.getBytes(), StandardCharsets.UTF_8);
-            }
+            // 5. 총 처리 시간 계산
+            long endTime = System.currentTimeMillis();
+            logSummary.append(String.format("총 처리 시간: %d ms\n", endTime - startTime));
+            logSummary.append("========= 응답 시간 측정 종료 =========");
 
-            if (resumeContent == null) {
-                return ResponseEntity.badRequest().body(Map.of("error", "지원하지 않는 파일 형식입니다"));
-            }
+            // 6. 로그 출력
+            System.out.println(logSummary.toString());
 
-            System.out.println("피드백 요청 시작");
-
-            // 피드백 요청 및 결과 파싱
-            String initialFeedback = openAiService.getDetailedFeedback(resumeContent);
-            Map<String, String> categorizedFeedback = openAiService.parseFeedbackByCategory(initialFeedback);
-
-            System.out.println("카테고리별 추가 평가 요청 시작");
-
-            // 각 항목별로 추가 평가 요청 및 결과 저장
-            Map<String, String> finalDetailedFeedback = new HashMap<>();
-            for (Map.Entry<String, String> entry : categorizedFeedback.entrySet()) {
-                String category = entry.getKey();
-                String feedback = entry.getValue();
-                String detailedFeedback = openAiService.requestFurtherEvaluation(category, feedback);
-                finalDetailedFeedback.put(category, detailedFeedback);
-            }
-
-            return ResponseEntity.ok(finalDetailedFeedback);
-
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "파일 처리 중 IO 오류 발생"));
+            return feedback;
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "파일 처리 실패"));
+            long errorTime = System.currentTimeMillis();
+            logSummary.append(String.format("오류 발생, 총 처리 시간: %d ms\n", errorTime - startTime));
+            logSummary.append(String.format("오류 메시지: %s\n", e.getMessage()));
+            System.out.println(logSummary.toString());
+            return Map.of("error", "파일 처리 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+    private String extractTextFromPdf(MultipartFile file) throws IOException {
+        try (PDDocument document = PDDocument.load(file.getInputStream())) {
+            PDFTextStripper pdfStripper = new PDFTextStripper();
+            return pdfStripper.getText(document);
         }
     }
 }

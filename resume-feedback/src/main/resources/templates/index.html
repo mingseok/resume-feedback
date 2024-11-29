@@ -90,10 +90,25 @@
             color: #333;
             min-height: 100px;
         }
+
+        @media screen and (max-width: 600px) {
+            body {
+                padding: 20px;
+            }
+
+            form {
+                width: 100%;
+            }
+
+            #enhancedContent {
+                max-width: 100%;
+                margin: 10px 0;
+            }
+        }
     </style>
     <script>
-        $(document).ready(function() {
-            $('form').on('submit', function(event) {
+        $(document).ready(function () {
+            $('form').on('submit', function (event) {
                 event.preventDefault();
 
                 var formData = new FormData(this);
@@ -104,20 +119,22 @@
                     data: formData,
                     processData: false,
                     contentType: false,
-                    success: function(data) {
-                        console.log(data);
+                    success: function (data) {
+                        console.log(data); // 서버 응답 확인
                         $('#message').text('분석 결과:');
                         $('#enhancedContent').empty();
 
-                        // 모든 항목이 반환되도록 보장
-                        const categories = ["기본 정보", "기술 스택", "경력 사항", "포트폴리오", "대외활동", "자격증", "자기소개서"];
-                        categories.forEach(function(category) {
-                            let feedback = data[category] || '해당 항목에 대한 피드백이 없습니다.';
-                            $('#enhancedContent').append('<h3>' + category + '</h3>');
-                            $('#enhancedContent').append('<p>' + feedback + '</p>');
-                        });
+                        // 응답 데이터가 객체 형태일 경우 처리
+                        for (const [category, feedback] of Object.entries(data)) {
+                            $('#enhancedContent').append(`
+                            <div>
+                                <h3>${category}</h3>
+                                <p>${feedback || '해당 항목에 대한 피드백이 없습니다.'}</p>
+                            </div>
+                        `);
+                        }
                     },
-                    error: function() {
+                    error: function () {
                         $('#message').text('파일 업로드 및 분석 중 에러가 발생했습니다.');
                     }
                 });

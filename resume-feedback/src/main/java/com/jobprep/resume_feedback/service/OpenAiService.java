@@ -1,24 +1,19 @@
 package com.jobprep.resume_feedback.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.cache.annotation.Cacheable;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class OpenAiService {
+
+    private final RestTemplate restTemplate;
 
     @Value("${openai.api.key}")
     private String apiKey;
@@ -26,10 +21,14 @@ public class OpenAiService {
     @Value("${openai.api.url}")
     private String apiUrl;
 
-    private static final HttpClient httpClient = HttpClient.newHttpClient();  // 정적 필드로 HttpClient 생성
-    
-    @Cacheable("feedbackCache")
-    public String getDetailedFeedback(String content) {
+    @Value("${openai.model}")
+    private String model;
+
+    public OpenAiService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    public Map<String, String> getFeedbackForSections(String content, StringBuilder logSummary) {
         String[] questions = {
                 "이력서의 기본 정보(이름, 연락처, 이메일 등)가 적절하게 포함되고 형식이 올바른지 평가해주세요.",
                 "기술 스택이 직무에 적합하고 충분히 설명되었는지 평가해주세요. 주요 기술에 대한 이해를 보여주는지 확인해주세요.",
@@ -38,107 +37,72 @@ public class OpenAiService {
                 "자기소개서가 직무와 적합하고, 지원자의 강점과 가치관을 잘 전달하고 있는지 평가해주세요."
         };
 
-        String questionsPrompt = Arrays.stream(questions)
-                .collect(Collectors.joining("\n\n"));
+        Map<String, String> feedbackMap = new HashMap<>();
+        long totalApiTime = 0;
 
-        String prompt = "다음 이력서를 평가하고 각 항목에 대한 구체적인 피드백을 제공해줘:\n\n"
-                + questionsPrompt
-                + "\n\n이력서 내용:\n" + content;
+        for (String question : questions) {
+            long startTime = System.currentTimeMillis(); // API 호출 시작 시간
+            String response = callOpenAiApi(question, content);
+            long endTime = System.currentTimeMillis(); // API 호출 종료 시간
 
-        return callOpenAiApi(prompt);
+            // 질문에 따라 로그 저장
+            if (question.contains("기본 정보")) {
+                logSummary.append(String.format("기본 정보 피드백 응답 시간: %d ms\n", endTime - startTime));
+            } else if (question.contains("기술 스택")) {
+                logSummary.append(String.format("기술 스택 피드백 응답 시간: %d ms\n", endTime - startTime));
+            } else if (question.contains("경력 사항과 포트폴리오")) {
+                logSummary.append(String.format("경력 사항 피드백 응답 시간: %d ms\n", endTime - startTime));
+            } else if (question.contains("대외활동과 자격증")) {
+                logSummary.append(String.format("대외활동, 자격증 피드백 응답 시간: %d ms\n", endTime - startTime));
+            } else if (question.contains("자기소개서")) {
+                logSummary.append(String.format("자기소개서 피드백 응답 시간: %d ms\n", endTime - startTime));
+            }
+
+            feedbackMap.put(question, response);
+            totalApiTime += (endTime - startTime);
+        }
+
+        // OpenAI API 전체 처리 시간 출력
+        return feedbackMap;
     }
 
-    // OpenAI API 호출 메서드
-    public String callOpenAiApi(String text) {
+    private String callOpenAiApi(String question, String content) {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("model", model);
+        requestBody.put("messages", new Object[]{
+                Map.of("role", "system", "content", "You are a helpful assistant."),
+                Map.of("role", "user", "content", question + "\n\n이력서 내용:\n" + content)
+        });
+
+        // Authorization 헤더 추가
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + apiKey);
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
         try {
-            // 요청 본문 생성 (이전 예시에서 JSON 본문 생성 메서드 사용)
-            String requestBody = createRequestBody(text);
-
-            // HTTP 요청 생성
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiUrl))
-                    .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + apiKey)
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                    .build();
-
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            // 응답 본문 출력
-            System.out.println("Raw API response: " + response.body());
-
-            // JSON 응답 파싱
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonResponse = objectMapper.readTree(response.body());
-
-            // 응답에서 message.content 추출
-            String content = jsonResponse.path("choices")
-                    .get(0)
-                    .path("message")
-                    .path("content")
-                    .asText();
-
-            // 추출된 내용 출력
-            System.out.println("GPT 응답: " + content);
-
-            // 추출된 응답 반환
-            return content;
-
+            ResponseEntity<Map> response = restTemplate.postForEntity(apiUrl, entity, Map.class);
+            System.out.println("OpenAI API 응답: " + response.getBody()); // 로그 추가
+            return extractMessageFromResponse(response.getBody());
         } catch (Exception e) {
-            e.printStackTrace();
-            return "OpenAI API 호출 중 오류 발생";
+            System.out.println("OpenAI API 호출 중 오류: " + e.getMessage()); // 로그 추가
+            return "API 호출 중 오류가 발생했습니다: " + e.getMessage();
         }
     }
 
-    // OpenAI API 요청 본문 생성 메서드
-    private String createRequestBody(String text) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, Object> body = new HashMap<>();
-            body.put("model", "gpt-3.5-turbo"); // 모델을 gpt-3.5-turbo로 설정
-
-            // messages 배열 생성
-            List<Map<String, String>> messages = new ArrayList<>();
-            Map<String, String> userMessage = new HashMap<>();
-            userMessage.put("role", "user"); // 역할은 user로 설정
-            userMessage.put("content", text); // 텍스트를 content로 설정
-            messages.add(userMessage);
-
-            body.put("messages", messages); // messages 배열을 요청 본문에 추가
-            body.put("max_tokens", 1600); // 최대 토큰 설정
-
-            // 객체를 JSON 문자열로 변환
-            return objectMapper.writeValueAsString(body);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+    private String extractMessageFromResponse(Map<String, Object> response) {
+        if (response == null || !response.containsKey("choices")) {
+            return "API 응답이 비어있습니다.";
         }
-    }
 
-    public Map<String, String> parseFeedbackByCategory(String feedback) {
-        Map<String, String> categoryFeedback = new HashMap<>();
-        String[] categories = {
-                "기본 정보", "기술 스택", "경력 사항",
-                "포트폴리오", "대외활동", "자격증", "자기소개서"
-        };
-
-        for (String category : categories) {
-            String regex = category + "([^\\n]+)([\\s\\S]*?)(?=\\n[A-Z가-힣\\s]+:|$)";
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(feedback);
-            if (matcher.find()) {
-                categoryFeedback.put(category, matcher.group(2).trim());
-            } else {
-                // 카테고리가 누락된 경우 기본 메시지를 추가
-                categoryFeedback.put(category, "해당 항목에 대한 피드백이 없습니다.");
+        var choices = (Iterable<Map<String, Object>>) response.get("choices");
+        for (Map<String, Object> choice : choices) {
+            Map<String, String> message = (Map<String, String>) choice.get("message");
+            if (message != null && message.containsKey("content")) {
+                return message.get("content");
             }
         }
-        return categoryFeedback;
-    }
-
-    public String requestFurtherEvaluation(String category, String feedback) {
-        String prompt = "다음은 '" + category + "'에 대한 피드백입니다:\n\n" + feedback
-                + "\n\n이 내용을 바탕으로 추가 평가를 제공해주세요.";
-        return callOpenAiApi(prompt);
+        return "API 응답에서 메시지를 찾을 수 없습니다.";
     }
 }
