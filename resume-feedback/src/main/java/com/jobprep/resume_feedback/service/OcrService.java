@@ -54,7 +54,7 @@ public class OcrService {
         try (PDDocument document = PDDocument.load(pdfFile)) {
             PDFRenderer renderer = new PDFRenderer(document);
             for (int page = 0; page < document.getNumberOfPages(); ++page) {
-                BufferedImage image = renderer.renderImageWithDPI(page, 300, ImageType.BINARY);
+                BufferedImage image = renderer.renderImageWithDPI(page, 150, ImageType.BINARY);
                 String pageText = tesseract.doOCR(image);
                 extractedText.append(pageText);
             }

@@ -29,11 +29,7 @@ public class FileUploadController {
         try {
             logSummary.append("\n========= OCR 응답 시간 측정 시작 =========\n");
 
-            // 1. 원본 PDF 파일 크기 가져오기
-            long pdfFileSize = file.getSize(); // 바이트 단위 크기
-            logSummary.append(String.format("PDF 파일 크기: %d bytes\n", pdfFileSize));
-
-            // 2. OCR로 텍스트 추출
+            // OCR로 텍스트 추출
             long ocrStartTime = System.currentTimeMillis();
             File tempFile = File.createTempFile("upload-", ".pdf");
             file.transferTo(tempFile);
@@ -41,20 +37,23 @@ public class FileUploadController {
             long ocrEndTime = System.currentTimeMillis(); // OCR 완료 시간
             logSummary.append(String.format("OCR 처리 시간: %d ms\n", ocrEndTime - ocrStartTime));
 
-            // 3. 추출된 텍스트 크기 가져오기
+            // 추출된 텍스트 크기 가져오기
             int textLength = extractedText.length();
             logSummary.append(String.format("추출된 텍스트 크기: %d characters\n", textLength));
 
-            // 4. OpenAI API 호출
+            // OpenAI API 호출
             long apiStartTime = System.currentTimeMillis();
             Map<String, String> feedback = openAiService.getFeedbackForSections(extractedText, logSummary);
             long apiEndTime = System.currentTimeMillis();
             logSummary.append(String.format("OpenAI API 전체 처리 시간: %d ms\n", apiEndTime - apiStartTime));
 
-            // 5. 총 처리 시간 계산
+            // 총 처리 시간 계산
             long endTime = System.currentTimeMillis();
             logSummary.append(String.format("총 처리 시간: %d ms\n", endTime - startTime));
             logSummary.append("========= OCR 응답 시간 측정 종료 =========");
+
+            // 로그 출력
+            System.out.println(logSummary.toString());
 
             return feedback;
         } catch (Exception e) {
