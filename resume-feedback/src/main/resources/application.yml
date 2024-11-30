@@ -16,4 +16,4 @@ logging:
     org.springframework.web: DEBUG  # Spring MVC 관련 디버깅 로그
     com.jobprep.resume_feedback: DEBUG  # 패키지 경로에 따른 디버깅 로그
 tessdata:
-  prefix: src/main/resources/tessdata  # 실제 tessdata 디렉토리 경로
+  prefix: classpath:tessdata
