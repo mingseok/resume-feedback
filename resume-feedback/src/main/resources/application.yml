@@ -12,8 +12,18 @@ openai:
     url: https://api.openai.com/v1/chat/completions
 logging:
   level:
-    root: INFO
-    org.springframework.web: DEBUG  # Spring MVC 관련 디버깅 로그
-    com.jobprep.resume_feedback: DEBUG  # 패키지 경로에 따른 디버깅 로그
+    org.apache.hc: DEBUG
+    org.springframework.web: DEBUG
+
+#logging:
+#  level:7
+#    root: INFO
+#    org.springframework.web: DEBUG  # Spring MVC 관련 디버깅 로그
+#    com.jobprep.resume_feedback: DEBUG  # 패키지 경로에 따른 디버깅 로그
 tessdata:
   prefix: classpath:tessdata
+server:
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/plain
+    min-response-size: 1024

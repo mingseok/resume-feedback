@@ -1,5 +1,6 @@
 package com.jobprep.resume_feedback.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -7,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -29,6 +32,23 @@ public class OpenAiService {
     }
 
     public Map<String, String> getFeedbackForSections(String content, StringBuilder logSummary) {
+        // 깨진 텍스트 필터링
+        String preprocessedContent = cleanText(content);
+
+        // 텍스트가 유효한지 확인
+        if (preprocessedContent.equals("입력된 텍스트가 너무 짧아 분석이 어렵습니다. 텍스트를 보완해주세요.")) {
+            return Map.of("error", preprocessedContent);
+        }
+
+        // 질문과 대응되는 간략한 제목 매핑
+        String[] shortTitles = {
+                "기본 정보 피드백 응답 시간",
+                "기술 스택 피드백 응답 시간",
+                "경력 사항 피드백 응답 시간",
+                "대외활동, 자격증 피드백 응답 시간",
+                "자기소개서 피드백 응답 시간"
+        };
+
         String[] questions = {
                 "이력서의 기본 정보(이름, 연락처, 이메일 등)가 적절하게 포함되고 형식이 올바른지 평가해주세요.",
                 "기술 스택이 직무에 적합하고 충분히 설명되었는지 평가해주세요. 주요 기술에 대한 이해를 보여주는지 확인해주세요.",
@@ -40,29 +60,20 @@ public class OpenAiService {
         Map<String, String> feedbackMap = new HashMap<>();
         long totalApiTime = 0;
 
-        for (String question : questions) {
-            long startTime = System.currentTimeMillis(); // API 호출 시작 시간
-            String response = callOpenAiApi(question, content);
-            long endTime = System.currentTimeMillis(); // API 호출 종료 시간
+        // ** 텍스트 전처리 적용 **
+        String processedContent = preprocessResumeText(content);
 
-            // 질문에 따라 로그 저장
-            if (question.contains("기본 정보")) {
-                logSummary.append(String.format("기본 정보 피드백 응답 시간: %d ms\n", endTime - startTime));
-            } else if (question.contains("기술 스택")) {
-                logSummary.append(String.format("기술 스택 피드백 응답 시간: %d ms\n", endTime - startTime));
-            } else if (question.contains("경력 사항과 포트폴리오")) {
-                logSummary.append(String.format("경력 사항 피드백 응답 시간: %d ms\n", endTime - startTime));
-            } else if (question.contains("대외활동과 자격증")) {
-                logSummary.append(String.format("대외활동, 자격증 피드백 응답 시간: %d ms\n", endTime - startTime));
-            } else if (question.contains("자기소개서")) {
-                logSummary.append(String.format("자기소개서 피드백 응답 시간: %d ms\n", endTime - startTime));
-            }
+        for (int i = 0; i < questions.length; i++) {
+            long startTime = System.currentTimeMillis();
+            String response = callOpenAiApi(questions[i], processedContent);
+            long endTime = System.currentTimeMillis();
 
-            feedbackMap.put(question, response);
+            // 각 질문에 대해 간단한 제목으로 로그에 추가
+            logSummary.append(String.format("%s: %d ms\n", shortTitles[i], endTime - startTime));
+            feedbackMap.put(questions[i], response);
             totalApiTime += (endTime - startTime);
         }
 
-        // OpenAI API 전체 처리 시간 출력
         return feedbackMap;
     }
 
@@ -74,7 +85,6 @@ public class OpenAiService {
                 Map.of("role", "user", "content", question + "\n\n이력서 내용:\n" + content)
         });
 
-        // Authorization 헤더 추가
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + apiKey);
         headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
@@ -82,12 +92,48 @@ public class OpenAiService {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
         try {
-            ResponseEntity<Map> response = restTemplate.postForEntity(apiUrl, entity, Map.class);
-            System.out.println("OpenAI API 응답: " + response.getBody()); // 로그 추가
-            return extractMessageFromResponse(response.getBody());
+            // 응답 데이터를 byte[]로 수신
+            ResponseEntity<byte[]> response = restTemplate.postForEntity(apiUrl, entity, byte[].class);
+
+            // 응답 상태 코드 확인
+            System.out.println("OpenAI API 응답 상태 코드: " + response.getStatusCode());
+
+            // 응답 본문 처리 (압축 해제 또는 문자열 변환)
+            String responseBody = new String(response.getBody(), StandardCharsets.UTF_8);
+
+            // 응답 로그
+            System.out.println("OpenAI API 응답 본문: " + responseBody);
+
+            // JSON 데이터에서 메시지 추출
+            return extractMessageFromJson(responseBody);
         } catch (Exception e) {
-            System.out.println("OpenAI API 호출 중 오류: " + e.getMessage()); // 로그 추가
+            // 에러 로그
+            System.err.println("OpenAI API 호출 중 오류: " + e.getMessage());
+            e.printStackTrace();
             return "API 호출 중 오류가 발생했습니다: " + e.getMessage();
+        }
+    }
+
+    private String extractMessageFromJson(String responseBody) {
+        try {
+            // JSON 파싱을 위해 ObjectMapper 사용
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> responseMap = mapper.readValue(responseBody, Map.class);
+
+            if (responseMap.containsKey("choices")) {
+                List<Map<String, Object>> choices = (List<Map<String, Object>>) responseMap.get("choices");
+                for (Map<String, Object> choice : choices) {
+                    Map<String, String> message = (Map<String, String>) choice.get("message");
+                    if (message != null && message.containsKey("content")) {
+                        return message.get("content");
+                    }
+                }
+            }
+            return "API 응답에서 메시지를 찾을 수 없습니다.";
+        } catch (Exception e) {
+            System.err.println("응답 JSON 파싱 중 오류: " + e.getMessage());
+            e.printStackTrace();
+            return "응답 파싱 중 오류가 발생했습니다.";
         }
     }
 
@@ -104,5 +150,33 @@ public class OpenAiService {
             }
         }
         return "API 응답에서 메시지를 찾을 수 없습니다.";
+    }
+
+    private String preprocessResumeText(String rawText) {
+        // 불필요한 공백 제거
+        rawText = rawText.replaceAll("\\s+", " ").trim();
+
+        // 최대 길이 제한
+        int maxLength = 3000; // OpenAI API가 처리하기 적합한 크기
+        return rawText.length() > maxLength ? rawText.substring(0, maxLength) : rawText;
+    }
+
+    private String cleanText(String rawText) {
+        if (rawText == null || rawText.isEmpty()) {
+            return "";
+        }
+
+        // 정규식으로 유효한 문자만 남기기 (한글, 영어, 숫자, 기본 구두점)
+        String cleanedText = rawText.replaceAll("[^가-힣a-zA-Z0-9.,!?\\s]", " ");
+
+        // 다중 공백 제거
+        cleanedText = cleanedText.replaceAll("\\s+", " ").trim();
+
+        // 텍스트가 너무 짧으면 기본 메시지 반환
+        if (cleanedText.length() < 50) {
+            return "입력된 텍스트가 너무 짧아 분석이 어렵습니다. 텍스트를 보완해주세요.";
+        }
+
+        return cleanedText;
     }
 }

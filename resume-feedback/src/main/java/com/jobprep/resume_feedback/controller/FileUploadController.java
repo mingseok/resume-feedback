@@ -27,7 +27,7 @@ public class FileUploadController {
         StringBuilder logSummary = new StringBuilder(); // 간소화된 로그 저장
 
         try {
-            logSummary.append("\n========= OCR 응답 시간 측정 시작 =========\n");
+            logSummary.append("\n========= gzip 응답 시간 측정 시작 =========\n");
 
             // OCR로 텍스트 추출
             long ocrStartTime = System.currentTimeMillis();
@@ -35,7 +35,6 @@ public class FileUploadController {
             file.transferTo(tempFile);
             String extractedText = ocrService.extractTextFromPdfWithOcr(tempFile);
             long ocrEndTime = System.currentTimeMillis(); // OCR 완료 시간
-            logSummary.append(String.format("OCR 처리 시간: %d ms\n", ocrEndTime - ocrStartTime));
 
             // 추출된 텍스트 크기 가져오기
             int textLength = extractedText.length();
@@ -49,8 +48,7 @@ public class FileUploadController {
 
             // 총 처리 시간 계산
             long endTime = System.currentTimeMillis();
-            logSummary.append(String.format("총 처리 시간: %d ms\n", endTime - startTime));
-            logSummary.append("========= OCR 응답 시간 측정 종료 =========");
+            logSummary.append("========= gzip 응답 시간 측정 종료 =========");
 
             // 로그 출력
             System.out.println(logSummary.toString());

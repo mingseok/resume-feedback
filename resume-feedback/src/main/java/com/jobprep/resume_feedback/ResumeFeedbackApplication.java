@@ -1,11 +1,11 @@
 package com.jobprep.resume_feedback;
 
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {RestTemplateAutoConfiguration.class})
 @EnableCaching
 public class ResumeFeedbackApplication {
 
