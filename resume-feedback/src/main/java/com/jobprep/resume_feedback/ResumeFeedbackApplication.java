@@ -4,9 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableAsync;
 
-@SpringBootApplication(exclude = {RestTemplateAutoConfiguration.class})
+@EnableAsync
 @EnableCaching
+@SpringBootApplication(exclude = {RestTemplateAutoConfiguration.class})
 public class ResumeFeedbackApplication {
 
 	public static void main(String[] args) {
