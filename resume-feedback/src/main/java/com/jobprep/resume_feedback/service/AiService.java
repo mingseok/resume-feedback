@@ -1,53 +1,44 @@
 package com.jobprep.resume_feedback.service;
 
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 @Service
 public class AiService {
 
-    @Value("${spring.ai.openai.api-key}")
-    private String apiKey;
-
-    @Value("${spring.ai.openai.url}")
-    private String apiUrl;
-
-    @Value("${spring.ai.openai.model}")
-    private String model;
     private final ChatClient chatClient;
 
     public AiService(ChatClient.Builder chatClientBuilder) {
-        this.chatClient = chatClientBuilder.build(); // ChatClient 인스턴스 생성
+        this.chatClient = chatClientBuilder.build(); // ## ChatClient 인스턴스 생성
     }
 
-    @Async
-    public CompletableFuture<String> getFeedbackForQuestionAsync(String question, String content) {
+    // ## 비동기 처리와 논블로킹 적용
+    public Mono<String> getFeedbackForQuestionAsync(String question, String content) {
         long startTime = System.currentTimeMillis();
         System.out.println("비동기 시작: " + question + " at " + startTime + " | Thread: " + Thread.currentThread().getName());
 
-        String response = chatClient.prompt()
-                .user(question + "\n\n이력서 내용:\n" + content)
-                .call()
-                .content();
-
-        long endTime = System.currentTimeMillis();
-        System.out.println("비동기 종료: " + question + " at " + endTime + " (처리 시간: " + (endTime - startTime) + "ms) | Thread: " + Thread.currentThread().getName());
-        return CompletableFuture.completedFuture(response);
+        // 블로킹 호출을 별도의 스레드풀에서 실행
+        return Mono.fromCallable(() -> {
+                    var response = chatClient.prompt()
+                            .user(question + "\n\n이력서 내용:\n" + content)
+                            .call();
+                    return response.content();
+                })
+                .subscribeOn(Schedulers.boundedElastic()) // 별도 스레드풀 사용
+                .doOnNext(result -> {
+                    long endTime = System.currentTimeMillis();
+                    System.out.println("비동기 종료: " + question + " at " + endTime + " (처리 시간: " + (endTime - startTime) + "ms) | Thread: " + Thread.currentThread().getName());
+                });
     }
 
-    public CompletableFuture<Map<String, String>> getFeedbackForSectionsAsync(String content) {
+    public Mono<Map<String, String>> getFeedbackForSectionsAsync(String content) {
         String preprocessedContent = preprocessResumeText(content);
 
         String[] questions = {
@@ -58,16 +49,22 @@ public class AiService {
                 "자기소개서가 직무와 적합하고, 지원자의 강점과 가치관을 잘 전달하고 있는지 평가해주세요."
         };
 
-        List<CompletableFuture<Map.Entry<String, String>>> futures =
-                List.of(questions).stream()
-                        .map(question -> getFeedbackForQuestionAsync(question, preprocessedContent)
-                                .thenApply(response -> Map.entry(question, response)))
-                        .collect(Collectors.toList());
+        // 질문과 응답을 병렬로 처리하며 Map으로 수집
+        return Flux.fromArray(questions)
+                .flatMap(question ->
+                                getFeedbackForQuestionAsync(question, preprocessedContent)
+                                        .map(response -> Tuples.of(question, response)), // Tuple2<String, String> 생성
+                        2) // 병렬 요청 수 제한
+                .collectMap(Tuple2::getT1, Tuple2::getT2); // Tuple2에서 Key와 Value 추출
+    }
 
-        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-                .thenApply(v -> futures.stream()
-                        .map(CompletableFuture::join)
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    // $$ 처리 시간을 비교하여 단축 비율을 계산하는 메서드 추가
+    public void calculateTimeReduction(long syncTime, long asyncTime) {
+        long reduction = syncTime - asyncTime;
+        double reductionPercentage = ((double) reduction / syncTime) * 100;
+
+        System.out.printf("비동기 처리 시간: %dms, 동기 처리 시간: %dms, 단축 시간: %dms, 단축 비율: %.2f%%%n",
+                asyncTime, syncTime, reduction, reductionPercentage);
     }
 
     private String preprocessResumeText(String rawText) {
