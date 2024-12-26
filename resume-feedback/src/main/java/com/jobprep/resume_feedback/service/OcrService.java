@@ -1,7 +1,6 @@
 package com.jobprep.resume_feedback.service;
 
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -15,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 
 @Service
-@RequiredArgsConstructor
 public class OcrService {
 
     private final Tesseract tesseract = new Tesseract();
@@ -52,17 +50,13 @@ public class OcrService {
         StringBuilder extractedText = new StringBuilder();
         try (PDDocument document = PDDocument.load(pdfFile)) {
             PDFRenderer renderer = new PDFRenderer(document);
-            for (int page = 0; page < document.getNumberOfPages(); ++page) {
+            for (int page = 0; page < document.getNumberOfPages(); page++) {
                 BufferedImage image = renderer.renderImageWithDPI(page, 150, ImageType.BINARY);
-                String pageText = tesseract.doOCR(image);
-                extractedText.append(pageText);
+                extractedText.append(tesseract.doOCR(image));
             }
-
-            String result = extractedText.toString();
-            System.out.println("result = " + result);
-            return result;
+            return extractedText.toString();
         } catch (TesseractException | IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("OCR 처리 중 오류 발생: " + e.getMessage(), e);
         }
     }
 }

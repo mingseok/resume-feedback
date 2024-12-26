@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 public class FileUploadController {
@@ -23,23 +23,19 @@ public class FileUploadController {
     }
 
     @PostMapping("/upload")
-    public Mono<Map<String, String>> uploadFileWithOcr(@RequestParam("file") MultipartFile file) {
+    public CompletableFuture<Map<String, String>> uploadFileWithFeedback(@RequestParam("file") MultipartFile file) {
         try {
+            // 임시 파일 생성 및 저장
             File tempFile = File.createTempFile("upload-", ".pdf");
             file.transferTo(tempFile);
 
+            // OCR로 텍스트 추출
             String extractedText = ocrService.extractTextFromPdfWithOcr(tempFile);
 
-            long startTime = System.currentTimeMillis();
-            System.out.println("비동기 요청 시작 시간: " + startTime);
-
-            return aiService.getFeedbackForSectionsAsync(extractedText)
-                    .doOnSuccess(response -> {
-                        long endTime = System.currentTimeMillis();
-                        System.out.println("비동기 요청 종료 시간: " + endTime + " (총 처리 시간: " + (endTime - startTime) + "ms)");
-                    });
+            // AI 분석 요청 실행 (비동기 호출)
+            return aiService.getFeedbackForSectionsAsync(extractedText);
         } catch (Exception e) {
-            return Mono.just(Map.of("error", "파일 처리 중 오류가 발생했습니다: " + e.getMessage()));
+            return CompletableFuture.completedFuture(Map.of("error", "파일 처리 중 오류가 발생했습니다: " + e.getMessage()));
         }
     }
 }
