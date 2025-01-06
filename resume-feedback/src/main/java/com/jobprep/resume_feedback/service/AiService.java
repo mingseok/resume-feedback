@@ -1,7 +1,13 @@
 package com.jobprep.resume_feedback.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jobprep.resume_feedback.domain.Feedback;
+import com.jobprep.resume_feedback.domain.Resume;
+import com.jobprep.resume_feedback.dto.FeedbackResponseDto;
+import com.jobprep.resume_feedback.dto.QuestionResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -9,23 +15,18 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AiService {
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final HttpClient httpClient = HttpClient.newBuilder().executor(executorService).build();
-
-    private final AtomicLong totalResponseTime = new AtomicLong(0); // 총 응답 시간
-    private final AtomicLong requestCount = new AtomicLong(0);      // 요청 횟수
+    private final HttpClient httpClient = HttpClient.newHttpClient();
 
     @Value("${spring.ai.openai.api-key}")
     private String apiKey;
@@ -33,84 +34,124 @@ public class AiService {
     @Value("${spring.ai.openai.url}")
     private String apiUrl;
 
-    @Value("${spring.ai.openai.model}")
-    private String model;
+    public CompletableFuture<FeedbackResponseDto> generateFeedback(Resume resume) {
+        String prompt = createPrompt(resume);
 
-    public CompletableFuture<String> getFeedbackForQuestionAsync(String question, String content) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                // 요청 본문 생성
-                Map<String, Object> requestPayload = new HashMap<>();
-                requestPayload.put("model", model);
+        return sendOpenAiRequest(prompt)
+                .thenApply(this::parseResponse)
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return new FeedbackResponseDto("기본 정보 부족", "자기소개 부족", "기술 스택 부족", "경력 부족", "프로젝트 부족", "포트폴리오 부족", "대외활동 부족");
+                });
+    }
 
-                Map<String, String> message = new HashMap<>();
-                message.put("role", "user");
-                message.put("content", question + "\n\n" + content);
-                requestPayload.put("messages", new Map[]{message});
+    private String createPrompt(Resume resume) {
+        return """
+            이력서를 검토하고 다음 항목별로 피드백을 주세요.
+            각 항목에 대해 최대 5줄로 작성해주세요:
+            1. 기본 정보
+            2. 자기소개
+            3. 기술 스택
+            4. 경력
+            5. 프로젝트
+            6. 포트폴리오
+            7. 대외활동
+            """ + resume.toString();
+    }
 
-                return objectMapper.writeValueAsString(requestPayload);
-            } catch (Exception e) {
-                throw new RuntimeException("JSON 직렬화 중 오류 발생: " + e.getMessage(), e);
-            }
-        }).thenCompose(requestBody -> {
-            // HTTP 요청 생성
+    private CompletableFuture<String> sendOpenAiRequest(String prompt) {
+        try {
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("model", "gpt-3.5-turbo");
+            requestBody.put("messages", Map.of("role", "user", "content", prompt));
+            requestBody.put("max_tokens", 500);
+
+            String requestBodyString = new ObjectMapper().writeValueAsString(requestBody);
+
+            // 디버깅용 출력
+            System.out.println("Request Body: " + requestBodyString);
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(apiUrl))
                     .header("Authorization", "Bearer " + apiKey)
                     .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody, StandardCharsets.UTF_8))
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBodyString))
                     .build();
 
-            long startTime = System.currentTimeMillis(); // **요청 시작 시간 측정**
-
-            // 논블로킹 HTTP 요청 전송
             return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                     .thenApply(response -> {
-                        long endTime = System.currentTimeMillis(); // **요청 종료 시간 측정**
-                        long responseTime = endTime - startTime;    // **응답 시간 계산**
-
-                        // **응답 시간 누적 및 평균 계산**
-                        totalResponseTime.addAndGet(responseTime);
-                        long currentCount = requestCount.incrementAndGet();
-                        long averageResponseTime = totalResponseTime.get() / currentCount;
-
-                        // **콘솔에 출력**
-                        System.out.println("요청 응답 시간: " + responseTime + "ms");
-                        System.out.println("현재까지의 평균 응답 시간: " + averageResponseTime + "ms");
-
-
-                        // 응답 데이터 추출
-                        try {
-                            JsonNode root = objectMapper.readTree(response.body());
-                            return root.path("choices").get(0).path("message").path("content").asText();
-                        } catch (Exception e) {
-                            throw new RuntimeException("응답 데이터 파싱 중 오류 발생: " + e.getMessage(), e);
-                        }
+                        System.out.println("Response Body: " + response.body());
+                        return response.body();
                     });
-        });
+        } catch (Exception e) {
+            throw new RuntimeException("OpenAI API 요청 실패", e);
+        }
     }
 
-    public CompletableFuture<Map<String, String>> getFeedbackForSectionsAsync(String content) {
-        String[] questions = {
-                "이력서의 기본 정보(이름, 연락처, 이메일 등)가 적절하게 포함되고 형식이 올바른지 평가해주세요.",
-                "기술 스택이 직무에 적합하고 충분히 설명되었는지 평가해주세요.",
-                "경력 사항과 포트폴리오가 직무와 연관성이 높고 주요 성과가 잘 드러나 있는지 평가해주세요.",
-                "대외활동과 자격증이 직무와 관련성이 있으며, 지원자의 역량을 보완하는지 평가해주세요.",
-                "자기소개서가 직무와 적합하고, 지원자의 강점과 가치관을 잘 전달하고 있는지 평가해주세요."
-        };
+    private FeedbackResponseDto parseResponse(String responseBody) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(responseBody);
 
-        CompletableFuture<Map<String, String>> resultFuture = CompletableFuture.supplyAsync(HashMap::new);
+            // 응답에서 content 추출
+            String content = extractContentFromResponse(responseBody);
 
-        for (String question : questions) {
-            resultFuture = resultFuture.thenCombine(
-                    getFeedbackForQuestionAsync(question, content),
-                    (results, feedback) -> {
-                        results.put(question, feedback);
-                        return results;
-                    }
+            Map<String, String> feedbackMap = extractFeedbackByCategory(content);
+
+            return new FeedbackResponseDto(
+                    feedbackMap.getOrDefault("기본 정보", "기본 정보 없음"),
+                    feedbackMap.getOrDefault("자기소개", "자기소개 없음"),
+                    feedbackMap.getOrDefault("기술 스택", "기술 스택 없음"),
+                    feedbackMap.getOrDefault("경력", "경력 없음"),
+                    feedbackMap.getOrDefault("프로젝트", "프로젝트 없음"),
+                    feedbackMap.getOrDefault("포트폴리오", "포트폴리오 없음"),
+                    feedbackMap.getOrDefault("대외활동", "대외활동 없음")
             );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new FeedbackResponseDto("기본 정보 없음", "자기소개 없음", "기술 스택 없음", "경력 없음", "프로젝트 없음", "포트폴리오 없음", "대외활동 없음");
+        }
+    }
+
+    private String extractContentFromResponse(String responseBody) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(responseBody);
+
+            // 응답 구조가 올바른지 확인 후 값 추출
+            if (rootNode.has("choices") && rootNode.get("choices").isArray()) {
+                return rootNode.get("choices").get(0).get("message").get("content").asText();
+            } else {
+                throw new RuntimeException("OpenAI 응답 구조가 예상과 다릅니다.");
+            }
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("OpenAI 응답 파싱 중 오류 발생: " + e.getMessage(), e);
+        }
+    }
+
+    private Map<String, String> extractFeedbackByCategory(String content) {
+        Map<String, String> feedbackMap = new HashMap<>();
+        String[] lines = content.split("\\n");
+
+        String currentCategory = null;
+        StringBuilder feedbackBuilder = new StringBuilder();
+
+        for (String line : lines) {
+            if (line.matches("^\\d+\\..*")) {
+                if (currentCategory != null) {
+                    feedbackMap.put(currentCategory, feedbackBuilder.toString().trim());
+                }
+                currentCategory = line.replaceAll("^\\d+\\.\\s*", "");
+                feedbackBuilder.setLength(0);
+            } else {
+                feedbackBuilder.append(line).append(" ");
+            }
         }
 
-        return resultFuture;
+        if (currentCategory != null) {
+            feedbackMap.put(currentCategory, feedbackBuilder.toString().trim());
+        }
+
+        return feedbackMap;
     }
 }

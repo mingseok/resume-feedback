@@ -1,62 +1,104 @@
 package com.jobprep.resume_feedback.service;
 
+import com.jobprep.resume_feedback.domain.Resume;
 import jakarta.annotation.PostConstruct;
-import net.sourceforge.tess4j.Tesseract;
-import net.sourceforge.tess4j.TesseractException;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.rendering.ImageType;
-import org.apache.pdfbox.rendering.PDFRenderer;
-import org.springframework.core.io.ClassPathResource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.springframework.core.io.ResourceLoader;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class OcrService {
+    public static final int DPI = 150;
+    public static final String DEFAULT_NAME = "Unknown";
+    public static final String DEFAULT_CONTACT = "Unknown";
+    public static final String DEFAULT_TECHNICAL_SKILLS = "Unknown";
 
-    private final Tesseract tesseract = new Tesseract();
+    private final ResourceLoader resourceLoader;
+    private final Tesseract tesseract;
 
     @PostConstruct
     public void init() {
         try {
-            // ClassPathResource로 tessdata 경로 가져오기
-            String absolutePath = new ClassPathResource("tessdata").getFile().getAbsolutePath();
-            System.out.println("TESSDATA_PREFIX 절대 경로: " + absolutePath);
-
-            // tessdata 디렉토리 존재 여부 확인
-            File tessdataDir = new File(absolutePath);
-            if (!tessdataDir.exists() || !tessdataDir.isDirectory()) {
-                throw new RuntimeException("tessdata 디렉토리가 존재하지 않습니다: " + tessdataDir.getAbsolutePath());
-            }
-
-            // kor.traineddata 파일 확인
-            File korFile = new File(tessdataDir, "kor.traineddata");
-            if (!korFile.exists()) {
-                throw new RuntimeException("훈련 데이터 파일이 없습니다: " + korFile.getAbsolutePath());
-            }
-
-            // Tesseract 데이터 경로 및 언어 설정
-            tesseract.setDatapath(absolutePath);
-            tesseract.setLanguage("kor");
-            System.out.println("훈련 데이터 파일 로드 성공: " + korFile.getAbsolutePath());
+            String tessdataPath = Paths.get(resourceLoader.getResource("classpath:tessdata").getURI()).toString();
+            tesseract.setDatapath(tessdataPath);
         } catch (IOException e) {
-            throw new RuntimeException("tessdata 경로를 읽는 중 오류가 발생했습니다.", e);
+            throw new RuntimeException("TESSDATA_PREFIX 설정 중 오류 발생: " + e.getMessage(), e);
         }
+        tesseract.setLanguage("kor");
     }
 
-    public String extractTextFromPdfWithOcr(File pdfFile) {
+    /**
+     * PDF 파일에서 이력서 정보를 추출하는 메서드
+     */
+    public Resume extractResumeFromPdf(String filePath) {
+        String extractedText = performOcr(filePath);
+        return parseExtractedTextToResume(extractedText);
+    }
+
+    /**
+     * PDF 파일을 OCR 처리하여 텍스트를 추출하는 메서드
+     */
+    private String performOcr(String filePath) {
+        File pdfFile = new File(filePath);
         StringBuilder extractedText = new StringBuilder();
+
         try (PDDocument document = PDDocument.load(pdfFile)) {
             PDFRenderer renderer = new PDFRenderer(document);
             for (int page = 0; page < document.getNumberOfPages(); page++) {
-                BufferedImage image = renderer.renderImageWithDPI(page, 150, ImageType.BINARY);
-                extractedText.append(tesseract.doOCR(image));
+                BufferedImage image = renderer.renderImageWithDPI(page, DPI, ImageType.RGB);
+                extractedText.append(tesseract.doOCR(image)).append("\n");
             }
-            return extractedText.toString();
-        } catch (TesseractException | IOException e) {
+        } catch (IOException | TesseractException e) {
             throw new RuntimeException("OCR 처리 중 오류 발생: " + e.getMessage(), e);
         }
+
+        return extractedText.toString();
+    }
+
+    /**
+     * OCR로 추출한 텍스트를 이력서 객체로 변환하는 메서드
+     */
+    private Resume parseExtractedTextToResume(String text) {
+        String[] lines = text.split("\\n");
+
+        String name = DEFAULT_NAME;
+        String contactInfo = DEFAULT_CONTACT;
+        String technicalSkills = DEFAULT_TECHNICAL_SKILLS;
+        List<String> projects = new ArrayList<>();
+
+        if (lines.length > 0) {
+            name = lines[0].trim();
+        }
+
+        if (lines.length > 1) {
+            contactInfo = lines[1].trim();
+        }
+
+        if (lines.length > 2) {
+            technicalSkills = lines[2].trim();
+        }
+
+        if (lines.length > 3) {
+            for (int i = 3; i < lines.length; i++) {
+                projects.add(lines[i].trim());
+            }
+        }
+
+        return new Resume(name, contactInfo, technicalSkills, projects);
     }
 }

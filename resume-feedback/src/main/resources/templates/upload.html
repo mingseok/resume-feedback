@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이력서 피드백 서비스</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- CSS Styling -->
+    <style>
+        /* 기본 리셋 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 배경 설정 (파스텔 블루 & 민트 그라데이션) */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #d1e8ff 0%, #c9f9e9 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* 카드형 컨테이너 스타일 (크기 축소) */
+        .container {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(12px);
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(31, 38, 135, 0.2);
+            text-align: center;
+            width: 100%;
+            max-width: 450px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        /* 애니메이션 효과 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 제목 스타일 (약간 축소) */
+        h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 18px;
+        }
+
+        /* 설명 텍스트 (약간 축소) */
+        p {
+            color: #666;
+            margin-bottom: 18px;
+            font-size: 14px;
+        }
+
+        /* 파일 선택 버튼 */
+        input[type="file"] {
+            display: none;
+        }
+
+        label {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: rgba(255, 255, 255, 0.85);
+            color: #333;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        label:hover {
+            background-color: #ffffff;
+            color: #111;
+        }
+
+        /* 파일 이름 표시 텍스트 */
+        .file-name {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #555;
+            display: none;
+        }
+
+        /* 업로드 버튼 스타일 (약간 축소) */
+        button {
+            background-color: #86c5da;
+            color: white;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #66aabc;
+        }
+
+        /* 업로드 아이콘 (약간 축소) */
+        .upload-icon {
+            font-size: 52px;
+            color: #333;
+            margin-bottom: 18px;
+        }
+
+        /* 로딩 메시지 */
+        .progress-message {
+            display: none;
+            font-size: 14px;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            button {
+                font-size: 16px;
+            }
+
+            label {
+                font-size: 14px;
+            }
+
+            .upload-icon {
+                font-size: 42px;
+            }
+        }
+    </style>
+    <!-- JS Script -->
+    <script>
+        // 파일 선택 시 파일 이름 표시
+        function handleFileSelection(event) {
+            const fileNameElement = document.querySelector('.file-name');
+            const file = event.target.files[0];
+
+            if (file) {
+                fileNameElement.textContent = `✔️ 선택된 파일: ${file.name}`;
+                fileNameElement.style.display = 'block';
+            } else {
+                fileNameElement.textContent = '';
+                fileNameElement.style.display = 'none';
+            }
+        }
+
+        // 로딩 메시지 표시
+        function showLoadingMessage() {
+            const message = document.querySelector('.progress-message');
+            message.style.display = 'block';
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="upload-icon">📄</div>
+    <h1>이력서 파일 업로드</h1>
+    <p>AI 분석을 위해 이력서 파일을 업로드하세요.</p>
+    <form th:action="@{/upload}" method="post" enctype="multipart/form-data" onsubmit="showLoadingMessage()">
+        <label for="file">📂 파일 선택하기</label>
+        <input type="file" id="file" name="file" required onchange="handleFileSelection(event)">
+        <p class="file-name"></p>
+        <button type="submit">분석</button>
+        <p class="progress-message">🔄 파일을 업로드 중입니다... 잠시만 기다려 주세요.</p>
+    </form>
+</div>
+</body>
+</html>

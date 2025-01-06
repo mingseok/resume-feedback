@@ -36,7 +36,9 @@ dependencies {
 	implementation 'org.apache.pdfbox:pdfbox:2.0.24'
 
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
 	implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
 	implementation 'org.apache.httpcomponents.core5:httpcore5:5.3.1'
 
@@ -62,6 +64,7 @@ dependencies {
 	implementation 'net.java.dev.jna:jna:5.8.0'
 	implementation 'org.springframework.boot:spring-boot-autoconfigure'
 
+	implementation 'org.springframework:spring-context'
 }
 
 dependencyManagement {

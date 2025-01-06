@@ -1,12 +1,12 @@
 spring:
   thymeleaf:
     prefix: classpath:/templates/
-    check-template-location: true
     suffix: .html
     mode: HTML
     cache: false
   servlet:
     multipart:
+      enabled: true
       max-file-size: 10MB # 하나의 파일 크기 제한 (10MB)
       max-request-size: 10MB # 요청 전체 크기 제한 (10MB)
   ai.openai:
@@ -21,7 +21,7 @@ logging:
     org.apache.hc: DEBUG
     org.springframework.web: DEBUG
 tessdata:
-  prefix: classpath:tessdata
+  prefix: ""
 server:
   compression:
     enabled: true

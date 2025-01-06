@@ -1,41 +1,54 @@
 package com.jobprep.resume_feedback.controller;
 
-import com.jobprep.resume_feedback.service.AiService;
-import com.jobprep.resume_feedback.service.OcrService;
+import com.jobprep.resume_feedback.dto.FeedbackResponseDto;
+import com.jobprep.resume_feedback.dto.ResumeRequestDto;
+import com.jobprep.resume_feedback.service.ResumeService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.File;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
-@RestController
+@Controller
+@Validated
+@RequiredArgsConstructor
 public class FileUploadController {
 
-    private final AiService aiService;
-    private final OcrService ocrService;
+    private final ResumeService resumeService;
 
-    public FileUploadController(AiService aiService, OcrService ocrService) {
-        this.aiService = aiService;
-        this.ocrService = ocrService;
+    @GetMapping("/")
+    public String showUploadPage() {
+        return "upload";
     }
 
+    // 파일 업로드 처리 및 로딩 페이지로 이동
     @PostMapping("/upload")
-    public CompletableFuture<Map<String, String>> uploadFileWithFeedback(@RequestParam("file") MultipartFile file) {
-        try {
-            // 임시 파일 생성 및 저장
-            File tempFile = File.createTempFile("upload-", ".pdf");
-            file.transferTo(tempFile);
+    public String handleFileUpload(ResumeRequestDto requestDto) {
+        resumeService.processResumeAsync(requestDto);
+        return "redirect:/loading";
+    }
 
-            // OCR로 텍스트 추출
-            String extractedText = ocrService.extractTextFromPdfWithOcr(tempFile);
+    // 진행률 업데이트 (SSE 연결)
+    @GetMapping("/progress")
+    public SseEmitter getProgress() {
+        SseEmitter emitter = new SseEmitter(60000L); // 타임아웃 설정
+        resumeService.subscribeToProgress(emitter);
+        return emitter;
+    }
 
-            // AI 분석 요청 실행 (비동기 호출)
-            return aiService.getFeedbackForSectionsAsync(extractedText);
-        } catch (Exception e) {
-            return CompletableFuture.completedFuture(Map.of("error", "파일 처리 중 오류가 발생했습니다: " + e.getMessage()));
-        }
+    // 로딩 페이지
+    @GetMapping("/loading")
+    public String showLoadingPage() {
+        return "loading";  // 로딩 페이지로 이동
+    }
+
+    // 결과 페이지
+    @GetMapping("/result")
+    public String showResultPage(Model model) {
+        FeedbackResponseDto feedback = resumeService.getFeedback();
+        model.addAttribute("result", feedback);
+        return "result";
     }
 }
