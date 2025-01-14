@@ -26,8 +26,13 @@ public class FileUploadController {
     // 파일 업로드 처리 및 로딩 페이지로 이동
     @PostMapping("/upload")
     public String handleFileUpload(ResumeRequestDto requestDto) {
-        resumeService.processResumeAsync(requestDto);
-        return "redirect:/loading";
+        try {
+            resumeService.processResume(requestDto);
+            return "redirect:/result";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error";
+        }
     }
 
     // 진행률 업데이트 (SSE 연결)
@@ -41,13 +46,20 @@ public class FileUploadController {
     // 로딩 페이지
     @GetMapping("/loading")
     public String showLoadingPage() {
-        return "loading";  // 로딩 페이지로 이동
+        return "loading";
     }
 
     // 결과 페이지
     @GetMapping("/result")
     public String showResultPage(Model model) {
         FeedbackResponseDto feedback = resumeService.getFeedback();
+
+        if (feedback == null || feedback.getSelfIntroduction().isEmpty()) {
+            feedback = new FeedbackResponseDto(
+                    "자기소개 없음", "기술 스택 없음",
+                    "경력 없음", "프로젝트 없음", "대외활동 없음"
+            );
+        }
         model.addAttribute("result", feedback);
         return "result";
     }

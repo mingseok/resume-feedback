@@ -34,14 +34,11 @@
 <body>
 <div class="result-container">
     <h2>AI 피드백 결과</h2>
-    <p><strong>기본 정보:</strong> <span th:text="${result?.basicInfo ?: '기본 정보 없음'}"></span></p>
-    <p><strong>자기소개:</strong> <span th:text="${result?.selfIntroduction ?: '자기소개 없음'}"></span></p>
-    <p><strong>기술 스택:</strong> <span th:text="${result?.technicalSkills ?: '기술 스택 없음'}"></span></p>
-    <p><strong>경력:</strong> <span th:text="${result?.workExperience ?: '경력 없음'}"></span></p>
-    <p><strong>프로젝트:</strong> <span th:text="${result?.projects ?: '프로젝트 없음'}"></span></p>
-    <p><strong>포트폴리오:</strong> <span th:text="${result?.portfolio ?: '포트폴리오 없음'}"></span></p>
-    <p><strong>대외활동:</strong> <span th:text="${result?.activities ?: '대외활동 없음'}"></span></p>
-
+    <p><strong>자기소개:</strong> <span th:text="${result.selfIntroduction}"></span></p>
+    <p><strong>기술 스택:</strong> <span th:text="${result.technicalSkills}"></span></p>
+    <p><strong>경력:</strong> <span th:text="${result.workExperience}"></span></p>
+    <p><strong>프로젝트:</strong> <span th:text="${result.projects}"></span></p>
+    <p><strong>대외활동:</strong> <span th:text="${result.activities}"></span></p>
 </div>
 </body>
 </html>

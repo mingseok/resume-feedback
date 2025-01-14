@@ -1,21 +1,28 @@
 package com.jobprep.resume_feedback.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.util.Collections;
 import java.util.List;
 
-@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Resume {
-    private final String name;
-    private final String contactInfo;
-    private final String technicalSkills;
-    private final List<String> projects;
+    private String selfIntroduction;    // 자기소개
+    private String technicalSkills;     // 기술 스택
+    private String workExperience;      // 경력
+    private List<String> projects;      // 프로젝트
+    private String activities;          // 대외활동
 
-    public Resume(String name, String contactInfo, String technicalSkills, List<String> projects) {
-        this.name = name;
-        this.contactInfo = contactInfo;
-        this.technicalSkills = technicalSkills;
-        this.projects = projects;
+    @Override
+    public String toString() {
+        return "자기소개: " + selfIntroduction + "\n"
+                + "기술 스택: " + technicalSkills + "\n"
+                + "경력: " + workExperience + "\n"
+                + "프로젝트: " + String.join(", ", projects) + "\n"
+                + "대외활동: " + activities;
     }
 }
