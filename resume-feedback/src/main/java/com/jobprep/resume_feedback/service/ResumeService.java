@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -159,7 +161,9 @@ public class ResumeService {
             // 동기 호출
             ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, entity, String.class);
 
-            System.out.println("OpenAI API 응답: " + response.getBody());
+            // 🛠 디버깅 코드 추가
+            System.out.println("📝 요청한 프롬프트: " + prompt);
+            System.out.println("📩 OpenAI API 응답: " + response.getBody());
 
             return parseOpenAiResponse(response.getBody());
 
@@ -190,10 +194,19 @@ public class ResumeService {
             // 응답에서 content 추출
             String content = rootNode.at("/choices/0/message/content").asText();
 
-            // 카테고리별 피드백 추출
-            Map<String, String> feedbackMap = extractFeedbackByCategory(content);
+            // 🔧 카테고리별 피드백 추출
+            Map<String, String> feedbackMap = new HashMap<>();
+            Pattern pattern = Pattern.compile("(?m)^\\d+\\.\\s*(.+?):\\s*(.*)$");
+            Matcher matcher = pattern.matcher(content);
 
-            System.out.println("파싱된 피드백 내용: " + feedbackMap);
+            while (matcher.find()) {
+                String category = matcher.group(1).trim();
+                String feedback = matcher.group(2).trim();
+                feedbackMap.put(category, feedback);
+            }
+
+            // 🔧 디버깅 출력
+            System.out.println("🔧 파싱된 피드백 내용: " + feedbackMap);
 
             return new FeedbackResponseDto(
                     feedbackMap.getOrDefault("자기소개", "자기소개 없음"),
@@ -207,6 +220,7 @@ public class ResumeService {
         }
     }
 
+
     private Map<String, String> extractFeedbackByCategory(String content) {
         Map<String, String> feedbackMap = new HashMap<>();
         String[] lines = content.split("\n");
@@ -216,13 +230,31 @@ public class ResumeService {
 
         for (String line : lines) {
             // 카테고리 번호로 시작하는 라인을 구분하여 카테고리 설정
-            if (line.matches("^\\d+\\.\\s?.*")) {
-                // 이전 카테고리의 피드백을 저장
+            if (line.matches("^\\d+\\..*")) {
+                // 기존 카테고리의 피드백을 저장
                 if (currentCategory != null) {
-                    feedbackMap.put(currentCategory.replace(":", "").trim(), feedbackBuilder.toString().trim());
+                    feedbackMap.put(currentCategory.trim(), feedbackBuilder.toString().trim());
                 }
                 // 새로운 카테고리 시작
-                currentCategory = line.replaceFirst("^\\d+\\.\\s?", "").trim();
+                switch (line.split("\\.", 2)[0].trim()) {
+                    case "1":
+                        currentCategory = "자기소개";
+                        break;
+                    case "2":
+                        currentCategory = "기술 스택";
+                        break;
+                    case "3":
+                        currentCategory = "경력";
+                        break;
+                    case "4":
+                        currentCategory = "프로젝트";
+                        break;
+                    case "5":
+                        currentCategory = "대외활동";
+                        break;
+                    default:
+                        currentCategory = null;
+                }
                 feedbackBuilder.setLength(0);  // StringBuilder 초기화
             } else if (currentCategory != null) {
                 feedbackBuilder.append(line).append(" ");
@@ -231,16 +263,16 @@ public class ResumeService {
 
         // 마지막 카테고리 저장
         if (currentCategory != null) {
-            feedbackMap.put(currentCategory.replace(":", "").trim(), feedbackBuilder.toString().trim());
+            feedbackMap.put(currentCategory.trim(), feedbackBuilder.toString().trim());
         }
 
-
-        // 🔧 디버깅 코드 추가
+        // 🔧 디버깅 코드
         System.out.println("🔧 파싱된 피드백 키 목록: " + feedbackMap.keySet());
         System.out.println("🔧 파싱된 피드백 내용: " + feedbackMap);
 
         return feedbackMap;
     }
+
 
     public FeedbackResponseDto getFeedback() {
         System.out.println("📋 저장된 피드백 반환: " + feedbackResponseDto);

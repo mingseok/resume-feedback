@@ -134,13 +134,13 @@ public class AiService {
 
         for (String line : lines) {
             // 카테고리 번호로 시작하는 라인을 구분하여 카테고리 설정
-            if (line.matches("^\\d+\\.\\s?.*")) {
+            if (line.matches("^\\d+\\..*")) {
+                // 기존 카테고리의 피드백을 저장
                 if (currentCategory != null) {
-                    // 기존 카테고리와 피드백 내용 저장
                     feedbackMap.put(currentCategory.trim(), feedbackBuilder.toString().trim());
                 }
                 // 새로운 카테고리 시작
-                currentCategory = line.replaceFirst("^\\d+\\.\\s?", "").trim();
+                currentCategory = line.split("\\.", 2)[1].trim();
                 feedbackBuilder.setLength(0);  // StringBuilder 초기화
             } else if (currentCategory != null) {
                 feedbackBuilder.append(line).append(" ");
@@ -152,7 +152,7 @@ public class AiService {
             feedbackMap.put(currentCategory.trim(), feedbackBuilder.toString().trim());
         }
 
-        // 🔧 디버깅 코드 추가
+        // 🔧 디버깅 코드
         System.out.println("🔧 파싱된 피드백 키 목록: " + feedbackMap.keySet());
         System.out.println("🔧 파싱된 피드백 내용: " + feedbackMap);
 
