@@ -41,18 +41,34 @@ public class AiService {
                 });
     }
 
+//    private String createPrompt(Resume resume) {
+//        return """
+//            이력서를 검토하고 다음 항목별로 피드백을 주세요.
+//            각 항목에 대해 글자 수 130자 정도로 피드백을 작성해줘:
+//            1. 기본 정보
+//            2. 자기소개
+//            3. 기술 스택
+//            4. 경력
+//            5. 프로젝트
+//            6. 포트폴리오
+//            7. 대외활동
+//            """ + resume.toString();
+//    }
+
     private String createPrompt(Resume resume) {
         return """
-            이력서를 검토하고 다음 항목별로 피드백을 주세요.
-            각 항목에 대해 최대 5줄로 작성해주세요:
-            1. 기본 정보
-            2. 자기소개
-            3. 기술 스택
-            4. 경력
-            5. 프로젝트
-            6. 포트폴리오
-            7. 대외활동
-            """ + resume.toString();
+        이력서를 검토하고 항목별로 구체적이고 간결한 피드백을 주세요.
+        각 항목에 대해 최대 5줄로 작성하고, 개선점과 강점을 함께 제시해 주세요.
+        
+        [이력서 항목]
+        1. 자기소개
+        2. 기술 스택
+        3. 경력
+        4. 프로젝트
+        5. 대외활동
+
+        아래는 검토할 이력서 내용입니다:
+        """ + resume.toString();
     }
 
     private CompletableFuture<String> sendOpenAiRequest(String prompt) {

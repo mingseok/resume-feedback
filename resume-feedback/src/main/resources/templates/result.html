@@ -3,42 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>결과 보기</title>
+    <title>AI 피드백 결과</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #f0f8ff;
+            background-color: #f0f4f9;
             font-family: 'Poppins', sans-serif;
-            padding: 40px;
+            padding: 20px;
         }
 
         .result-container {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fd 100%);
+            border-radius: 16px;
+            padding: 20px; /* 기존 30px에서 줄임 */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            max-width: 680px; /* 기존 800px에서 줄임 */
+            margin: auto;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .result-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            background: linear-gradient(90deg, #00c9ff, #92fe9d);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .feedback-item {
             background-color: #ffffff;
             border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: auto;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s ease-in-out;
         }
 
-        h2 {
-            color: #333;
-            margin-bottom: 20px;
+        .feedback-item:hover {
+            transform: scale(1.02);
         }
 
-        p {
+        .feedback-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e0f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+            color: #00796b;
+        }
+
+        .feedback-text {
+            flex-grow: 1;
+        }
+
+        .feedback-text strong {
             color: #555;
-            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .feedback-text span {
+            color: #333;
+            display: block;
+            margin-top: 5px;
+            font-size: 16px;
+        }
+
+        .upload-btn {
+            display: block;
+            text-align: center;
+            background-color: #00c9ff;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .upload-btn:hover {
+            background-color: #00796b;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .result-container {
+                padding: 15px; /* 모바일에서 패딩 줄임 */
+                max-width: 90%; /* 모바일 화면에서 최대 너비 조정 */
+            }
+
+            .feedback-item strong {
+                font-size: 16px;
+            }
+
+            .feedback-item span {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
 <div class="result-container">
-    <h2>AI 피드백 결과</h2>
-    <p><strong>자기소개:</strong> <span th:text="${result.selfIntroduction}"></span></p>
-    <p><strong>기술 스택:</strong> <span th:text="${result.technicalSkills}"></span></p>
-    <p><strong>경력:</strong> <span th:text="${result.workExperience}"></span></p>
-    <p><strong>프로젝트:</strong> <span th:text="${result.projects}"></span></p>
-    <p><strong>대외활동:</strong> <span th:text="${result.activities}"></span></p>
+    <div class="result-title">💡 AI 피드백 결과</div>
+
+    <div class="feedback-item">
+        <div class="feedback-icon">👤</div>
+        <div class="feedback-text">
+            <strong>자기소개:</strong>
+            <span th:text="${result.selfIntroduction}"></span>
+        </div>
+    </div>
+
+    <div class="feedback-item">
+        <div class="feedback-icon">💻</div>
+        <div class="feedback-text">
+            <strong>기술 스택:</strong>
+            <span th:text="${result.technicalSkills}"></span>
+        </div>
+    </div>
+
+    <div class="feedback-item">
+        <div class="feedback-icon">📂</div>
+        <div class="feedback-text">
+            <strong>경력:</strong>
+            <span th:text="${result.workExperience}"></span>
+        </div>
+    </div>
+
+    <div class="feedback-item">
+        <div class="feedback-icon">📊</div>
+        <div class="feedback-text">
+            <strong>프로젝트:</strong>
+            <span th:text="${result.projects}"></span>
+        </div>
+    </div>
+
+    <div class="feedback-item">
+        <div class="feedback-icon">🌐</div>
+        <div class="feedback-text">
+            <strong>대외활동:</strong>
+            <span th:text="${result.activities}"></span>
+        </div>
+    </div>
+
+    <a href="/" class="upload-btn">📄 새로운 이력서 업로드</a>
 </div>
 </body>
 </html>
