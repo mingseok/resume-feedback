@@ -46,26 +46,6 @@ public class ResumeService {
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    // 섹션별 데이터 추출 메서드
-    private String extractSection(String content, String sectionTitle) {
-        String[] lines = content.split("\n");
-        StringBuilder sectionContent = new StringBuilder();
-
-        boolean sectionFound = false;
-        for (String line : lines) {
-            if (line.contains(sectionTitle)) {
-                sectionFound = true;
-            } else if (sectionFound && line.isEmpty()) {
-                break;
-            } else if (sectionFound) {
-                sectionContent.append(line).append(" ");
-            }
-        }
-
-        return sectionContent.toString().trim();
-    }
-
-
     // SSE 구독 메서드
     public void subscribeToProgress(SseEmitter emitter) {
         executorService.submit(() -> {
@@ -106,37 +86,42 @@ public class ResumeService {
     }
 
     private Resume parseExtractedTextToResume(String extractedText) {
-        // 텍스트 줄별로 나누기
+        // 텍스트 줄 단위로 나누기
         String[] lines = extractedText.split("\\n");
 
-        // 기본 값 설정
-        String selfIntroduction = "자기소개 없음";
-        String technicalSkills = "기술스택 없음";
-        String workExperience = "경력 없음";
+        String selfIntroduction = "";
+        String technicalSkills = "";
+        String workExperience = "";
         List<String> projects = new ArrayList<>();
-        String activities = "대외활동 없음";
+        String activities = "";
 
-        // 줄별로 이력서 정보를 추출
-        if (lines.length > 0) {
-            selfIntroduction = lines[0].trim();
-        }
-        if (lines.length > 1) {
-            technicalSkills = lines[1].trim();
-        }
-        if (lines.length > 2) {
-            workExperience = lines[2].trim();
-        }
-        if (lines.length > 3) {
-            // 네 번째 줄부터는 프로젝트 정보로 간주
-            for (int i = 3; i < lines.length; i++) {
-                projects.add(lines[i].trim());
+        // 정규식 패턴 설정
+        Pattern workExperiencePattern = Pattern.compile("(경력|Work Experience):?\\s*(.*)", Pattern.CASE_INSENSITIVE);
+        Pattern activitiesPattern = Pattern.compile("(대외활동|Activities):?\\s*(.*)", Pattern.CASE_INSENSITIVE);
+
+        for (String line : lines) {
+            line = line.trim();
+
+            if (line.startsWith("자기소개")) {
+                selfIntroduction = line.replace("자기소개:", "").trim();
+            } else if (line.startsWith("기술 스택") || line.toLowerCase().contains("technical skills")) {
+                technicalSkills = line.replace("기술 스택:", "").trim();
+            } else if (workExperiencePattern.matcher(line).find()) {
+                Matcher matcher = workExperiencePattern.matcher(line);
+                if (matcher.find()) {
+                    workExperience = matcher.group(2).trim();
+                }
+            } else if (activitiesPattern.matcher(line).find()) {
+                Matcher matcher = activitiesPattern.matcher(line);
+                if (matcher.find()) {
+                    activities = matcher.group(2).trim();
+                }
+            } else {
+                // 프로젝트 정보 추가
+                projects.add(line);
             }
         }
-        if (lines.length > 4) {
-            workExperience = lines[4].trim();
-        }
 
-        // Resume 객체로 반환
         return new Resume(selfIntroduction, technicalSkills, workExperience, projects, activities);
     }
 
@@ -177,7 +162,7 @@ public class ResumeService {
 
     private String createPrompt(Resume resume) {
         return """
-        이력서를 검토하고 다음 항목별로 피드백을 주세요 (항목당 최대 5줄로 요약):
+        이력서를 검토하고 다음 항목별로 피드백을 주세요. 항목당 8줄까지 작성해줘.:
         1. 자기소개
         2. 기술 스택
         3. 경력
@@ -191,14 +176,23 @@ public class ResumeService {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(responseBody);
 
+            // 응답에서 choices 배열 확인
+            if (!rootNode.has("choices") || rootNode.get("choices").isEmpty()) {
+                throw new RuntimeException("OpenAI 응답에 choices 항목이 없습니다.");
+            }
+
             // 응답에서 content 추출
             String content = rootNode.at("/choices/0/message/content").asText();
 
-            // 🔧 카테고리별 피드백 추출
+            // 🔧 디버깅 출력
+            System.out.println("📩 API 응답 내용: " + content);
+
+            // 카테고리별로 줄바꿈과 콜론(:)을 기준으로 매칭
             Map<String, String> feedbackMap = new HashMap<>();
-            Pattern pattern = Pattern.compile("(?m)^\\d+\\.\\s*(.+?):\\s*(.*)$");
+            Pattern pattern = Pattern.compile("(?m)(자기소개|기술 스택|경력|프로젝트|대외활동):\\s*(.*)");
             Matcher matcher = pattern.matcher(content);
 
+            // 매칭된 카테고리를 feedbackMap에 저장
             while (matcher.find()) {
                 String category = matcher.group(1).trim();
                 String feedback = matcher.group(2).trim();
@@ -208,6 +202,7 @@ public class ResumeService {
             // 🔧 디버깅 출력
             System.out.println("🔧 파싱된 피드백 내용: " + feedbackMap);
 
+            // FeedbackResponseDto 생성
             return new FeedbackResponseDto(
                     feedbackMap.getOrDefault("자기소개", "자기소개 없음"),
                     feedbackMap.getOrDefault("기술 스택", "기술 스택 없음"),
@@ -219,60 +214,6 @@ public class ResumeService {
             throw new RuntimeException("OpenAI 응답 파싱 중 오류 발생: " + e.getMessage(), e);
         }
     }
-
-
-    private Map<String, String> extractFeedbackByCategory(String content) {
-        Map<String, String> feedbackMap = new HashMap<>();
-        String[] lines = content.split("\n");
-
-        String currentCategory = null;
-        StringBuilder feedbackBuilder = new StringBuilder();
-
-        for (String line : lines) {
-            // 카테고리 번호로 시작하는 라인을 구분하여 카테고리 설정
-            if (line.matches("^\\d+\\..*")) {
-                // 기존 카테고리의 피드백을 저장
-                if (currentCategory != null) {
-                    feedbackMap.put(currentCategory.trim(), feedbackBuilder.toString().trim());
-                }
-                // 새로운 카테고리 시작
-                switch (line.split("\\.", 2)[0].trim()) {
-                    case "1":
-                        currentCategory = "자기소개";
-                        break;
-                    case "2":
-                        currentCategory = "기술 스택";
-                        break;
-                    case "3":
-                        currentCategory = "경력";
-                        break;
-                    case "4":
-                        currentCategory = "프로젝트";
-                        break;
-                    case "5":
-                        currentCategory = "대외활동";
-                        break;
-                    default:
-                        currentCategory = null;
-                }
-                feedbackBuilder.setLength(0);  // StringBuilder 초기화
-            } else if (currentCategory != null) {
-                feedbackBuilder.append(line).append(" ");
-            }
-        }
-
-        // 마지막 카테고리 저장
-        if (currentCategory != null) {
-            feedbackMap.put(currentCategory.trim(), feedbackBuilder.toString().trim());
-        }
-
-        // 🔧 디버깅 코드
-        System.out.println("🔧 파싱된 피드백 키 목록: " + feedbackMap.keySet());
-        System.out.println("🔧 파싱된 피드백 내용: " + feedbackMap);
-
-        return feedbackMap;
-    }
-
 
     public FeedbackResponseDto getFeedback() {
         System.out.println("📋 저장된 피드백 반환: " + feedbackResponseDto);
@@ -288,41 +229,5 @@ public class ResumeService {
     public void setFeedback(FeedbackResponseDto feedbackResponseDto) {
         System.out.println("🔍 피드백 저장: " + feedbackResponseDto);
         this.feedbackResponseDto = feedbackResponseDto;
-    }
-
-    private FeedbackResponseDto parseFeedbackResponse(String content) {
-        String[] lines = content.split("\n");
-
-        String selfIntroduction = "";
-        String technicalSkills = "";
-        String workExperience = "";
-        String projects = "";
-        String activities = "";
-
-        for (String line : lines) {
-            if (line.startsWith("1.")) {
-                selfIntroduction = line.substring(3).trim();
-            } else if (line.startsWith("2.")) {
-                technicalSkills = line.substring(3).trim();
-            } else if (line.startsWith("3.")) {
-                workExperience = line.substring(3).trim();
-            } else if (line.startsWith("4.")) {
-                projects = line.substring(3).trim();
-            } else if (line.startsWith("5.")) {
-                activities = line.substring(3).trim();
-            }
-        }
-
-        return new FeedbackResponseDto(selfIntroduction, technicalSkills, workExperience, projects, activities);
-    }
-
-    public String getExtractedPdfText(ResumeRequestDto requestDto) {
-        try {
-            String pdfFilePath = requestDto.getFilePath();  // 업로드된 PDF 경로
-            return ocrService.extractTextFromPdf(pdfFilePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "PDF 내용을 불러오는 중 오류가 발생했습니다.";
-        }
     }
 }
