@@ -24,9 +24,10 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            position: relative;
         }
 
-        /* 카드형 컨테이너 스타일 (크기 축소) */
+        /* 카드형 컨테이너 스타일 */
         .container {
             background: rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(12px);
@@ -51,14 +52,14 @@
             }
         }
 
-        /* 제목 스타일 (약간 축소) */
+        /* 제목 스타일 */
         h1 {
             font-size: 32px;
             color: #333;
             margin-bottom: 18px;
         }
 
-        /* 설명 텍스트 (약간 축소) */
+        /* 설명 텍스트 */
         p {
             color: #666;
             margin-bottom: 18px;
@@ -94,7 +95,7 @@
             display: none;
         }
 
-        /* 업로드 버튼 스타일 (약간 축소) */
+        /* 업로드 버튼 스타일 */
         button {
             background-color: #86c5da;
             color: white;
@@ -112,7 +113,7 @@
             background-color: #66aabc;
         }
 
-        /* 업로드 아이콘 (약간 축소) */
+        /* 업로드 아이콘 */
         .upload-icon {
             font-size: 52px;
             color: #333;
@@ -149,6 +150,48 @@
                 font-size: 42px;
             }
         }
+
+        /* 눈 내리는 효과 */
+        .snow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall 5s linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) translateX(calc(100vw - 50vw));
+                opacity: 0;
+            }
+        }
+
+        @keyframes drift {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(20px);
+            }
+        }
     </style>
     <!-- JS Script -->
     <script>
@@ -171,9 +214,26 @@
             const message = document.querySelector('.progress-message');
             message.style.display = 'block';
         }
+
+        // 눈 내리는 효과 생성
+        function createSnowflakes() {
+            const snowContainer = document.querySelector('.snow');
+
+            for (let i = 0; i < 50; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.style.left = Math.random() * 100 + 'vw';
+                snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+                snowflake.style.animationDelay = Math.random() * 5 + 's';
+                snowContainer.appendChild(snowflake);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', createSnowflakes);
     </script>
 </head>
 <body>
+<div class="snow"></div>
 <div class="container">
     <div class="upload-icon">📄</div>
     <h1>이력서 파일 업로드</h1>
