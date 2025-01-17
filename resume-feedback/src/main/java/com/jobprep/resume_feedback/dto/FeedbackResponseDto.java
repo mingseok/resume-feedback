@@ -1,10 +1,12 @@
 package com.jobprep.resume_feedback.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Data
+@Getter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class FeedbackResponseDto {

@@ -1,11 +1,13 @@
 package com.jobprep.resume_feedback.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
-@Data
+@Getter
+@RequiredArgsConstructor
 public class ResumeRequestDto {
     private MultipartFile file;
 

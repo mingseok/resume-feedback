@@ -7,15 +7,15 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Resume {
 
-    private String selfIntroduction;    // 자기소개
-    private String technicalSkills;     // 기술 스택
-    private String workExperience;      // 경력
-    private List<String> projects;      // 프로젝트
-    private String activities;          // 대외활동
+    private String selfIntroduction; // 자기소개
+    private String technicalSkills;  // 기술 스택
+    private String workExperience;   // 경력
+    private List<String> projects;   // 프로젝트
+    private String activities;       // 대외활동
 
     @Override
     public String toString() {
