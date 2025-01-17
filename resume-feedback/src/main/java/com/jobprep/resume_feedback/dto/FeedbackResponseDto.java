@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FeedbackResponseDto {
+
     private String selfIntroduction;
     private String technicalSkills;
     private String workExperience;

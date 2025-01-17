@@ -178,7 +178,7 @@
     <div class="upload-icon">📄</div>
     <h1>이력서 파일 업로드</h1>
     <p>AI 분석을 위해 이력서 파일을 업로드하세요.</p>
-    <form th:action="@{/upload}" method="post" enctype="multipart/form-data" onsubmit="showLoadingMessage()">
+    <form action="/upload" method="post" enctype="multipart/form-data" onsubmit="showLoadingMessage()">
         <label for="file">📂 파일 선택하기</label>
         <input type="file" id="file" name="file" required onchange="handleFileSelection(event)">
         <p class="file-name"></p>

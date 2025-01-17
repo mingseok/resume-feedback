@@ -9,7 +9,10 @@ import java.io.File;
 public class ResumeRequestDto {
     private MultipartFile file;
 
-    // 파일 경로 반환
+    public ResumeRequestDto(MultipartFile file) {
+        this.file = file;
+    }
+
     public String getFilePath() {
         try {
             // 임시 디렉토리에 파일 저장

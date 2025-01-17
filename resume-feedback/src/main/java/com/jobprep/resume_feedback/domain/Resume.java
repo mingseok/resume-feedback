@@ -2,7 +2,6 @@ package com.jobprep.resume_feedback.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -11,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Resume {
+
     private String selfIntroduction;    // 자기소개
     private String technicalSkills;     // 기술 스택
     private String workExperience;      // 경력

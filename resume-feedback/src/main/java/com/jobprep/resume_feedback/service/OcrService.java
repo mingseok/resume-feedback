@@ -18,8 +18,7 @@ import java.nio.file.Paths;
 @Service
 @RequiredArgsConstructor
 public class OcrService {
-    public static final int DPI = 400;
-
+    public static final int DPI = 370;
     private final ResourceLoader resourceLoader;
     private final Tesseract tesseract;
 
