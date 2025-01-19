@@ -12,6 +12,7 @@ public class ResumeParserService {
 
     /**
      * 추출된 텍스트를 이력서 객체로 변환
+     *
      * @param extractedText OCR로 추출된 텍스트
      * @return Resume 변환된 이력서 객체
      */
@@ -28,8 +29,9 @@ public class ResumeParserService {
 
     /**
      * 특정 섹션을 추출
-     * @param lines 텍스트 라인 배열
-     * @param sectionKey 섹션 키워드
+     *
+     * @param lines          텍스트 라인 배열
+     * @param sectionKey     섹션 키워드
      * @param alternativeKey 대체 키워드
      * @return String 추출된 섹션 내용
      */
@@ -44,7 +46,8 @@ public class ResumeParserService {
 
     /**
      * 정규식을 사용하여 섹션을 추출
-     * @param lines 텍스트 라인 배열
+     *
+     * @param lines   텍스트 라인 배열
      * @param pattern 정규식 패턴
      * @return String 추출된 섹션 내용
      */
@@ -61,6 +64,7 @@ public class ResumeParserService {
 
     /**
      * 프로젝트 목록을 추출
+     *
      * @param lines 텍스트 라인 배열
      * @return List<String> 프로젝트 목록
      */

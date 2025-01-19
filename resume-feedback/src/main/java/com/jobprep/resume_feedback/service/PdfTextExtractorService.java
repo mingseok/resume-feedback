@@ -86,8 +86,8 @@ public class PdfTextExtractorService {
      * PDF의 특정 페이지에서 OCR을 통해 텍스트를 추출합니다.
      *
      * @param renderer PDFRenderer 객체
-     * @param page 페이지 번호 (0부터 시작)
-     * @param dpi 페이지를 이미지로 변환할 때 사용할 DPI 값
+     * @param page     페이지 번호 (0부터 시작)
+     * @param dpi      페이지를 이미지로 변환할 때 사용할 DPI 값
      * @return OCR로 추출한 정규화된 텍스트
      */
     private String extractTextFromPage(PDFRenderer renderer, int page, int dpi) {
@@ -120,6 +120,7 @@ public class PdfTextExtractorService {
 
     /**
      * 텍스트를 정규화하여 불필요한 공백과 특수문자를 제거합니다.
+     *
      * @param text 원본 텍스트
      * @return 정규화된 텍스트
      */

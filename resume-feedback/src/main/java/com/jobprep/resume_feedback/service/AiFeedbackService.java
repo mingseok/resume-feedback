@@ -37,6 +37,7 @@ public class AiFeedbackService {
 
     /**
      * OpenAI를 호출하여 비동기로 피드백 요청
+     *
      * @param resume 파싱된 Resume 객체
      * @return CompletableFuture<FeedbackResponseDto> 피드백 응답
      */
@@ -49,6 +50,7 @@ public class AiFeedbackService {
 
     /**
      * OpenAI 요청 바디 생성
+     *
      * @param resume 이력서 객체
      * @return Map<String, Object> 요청 바디
      */
@@ -66,25 +68,27 @@ public class AiFeedbackService {
 
     /**
      * OpenAI 요청 프롬프트 생성
+     *
      * @param resume 이력서 객체
      * @return String 생성된 프롬프트
      */
     private String createPrompt(Resume resume) {
         return """
-    아래는 이력서 검토 요청입니다. 각 항목에 대해 간결하고 구체적인 피드백을 주세요. 각 항목은 16줄 이내로 작성해주세요:
+                아래는 이력서 검토 요청입니다. 각 항목에 대해 간결하고 구체적인 피드백을 주세요. 각 항목은 16줄 이내로 작성해주세요:
 
-    1. 자기소개: 본인의 강점과 역할을 중심으로 소개 내용을 작성해주세요.
-    2. 기술 스택: 사용한 기술이 어떤지 설명해주세요.
-    3. 경력: 과거 직무에서 수행한 역할과 성과를 중심으로 작성해주세요.
-    4. 프로젝트: 수행한 프로젝트의 주요 내용, 본인의 기여도 및 성과를 설명해주세요.
-    5. 대외활동: 참여한 활동과 이를 통해 얻은 경험 및 성장 내용을 작성해주세요.
+                1. 자기소개: 본인의 강점과 역할을 중심으로 소개 내용을 작성해주세요.
+                2. 기술 스택: 사용한 기술이 어떤지 설명해주세요.
+                3. 경력: 과거 직무에서 수행한 역할과 성과를 중심으로 작성해주세요.
+                4. 프로젝트: 수행한 프로젝트의 주요 내용, 본인의 기여도 및 성과를 설명해주세요.
+                5. 대외활동: 참여한 활동과 이를 통해 얻은 경험 및 성장 내용을 작성해주세요.
 
-    이력서 내용:
-    """ + resume.toString();
+                이력서 내용:
+                """ + resume.toString();
     }
 
     /**
      * HTTP 요청 실행
+     *
      * @param requestBody 요청 바디
      * @return FeedbackResponseDto 피드백 응답 객체
      */
@@ -102,6 +106,7 @@ public class AiFeedbackService {
 
     /**
      * HTTP POST 객체 생성
+     *
      * @param requestBody 요청 바디
      * @return HttpPost 생성된 HTTP POST 객체
      */
@@ -115,6 +120,7 @@ public class AiFeedbackService {
 
     /**
      * OpenAI 응답 파싱
+     *
      * @param responseBody 응답 본문
      * @return FeedbackResponseDto 파싱된 응답 객체
      */
@@ -139,6 +145,7 @@ public class AiFeedbackService {
 
     /**
      * OpenAI 응답에서 항목 추출
+     *
      * @param content 응답 내용
      * @return Map<String, String> 추출된 항목 맵
      */
@@ -156,6 +163,7 @@ public class AiFeedbackService {
 
     /**
      * 피드백 DTO 생성
+     *
      * @param feedbackMap 추출된 피드백 맵
      * @return FeedbackResponseDto 생성된 피드백 DTO
      */

@@ -29,7 +29,8 @@ public class FileUploadController {
 
     /**
      * 파일 업로드를 처리하고 결과를 보여줍니다.
-     * @param file 업로드된 파일
+     *
+     * @param file  업로드된 파일
      * @param model 모델 객체
      */
     @PostMapping("/upload")
