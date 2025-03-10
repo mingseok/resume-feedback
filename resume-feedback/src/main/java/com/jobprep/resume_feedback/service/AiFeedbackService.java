@@ -18,9 +18,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -35,25 +33,40 @@ public class AiFeedbackService {
     @Value("${spring.ai.openai.model}")
     private String model;
 
-    /**
-     * OpenAI를 호출하여 비동기로 피드백 요청
-     *
-     * @param resume 파싱된 Resume 객체
-     * @return CompletableFuture<FeedbackResponseDto> 피드백 응답
-     */
-    public CompletableFuture<FeedbackResponseDto> requestFeedback(Resume resume) {
-        return CompletableFuture.supplyAsync(() -> {
-            Map<String, Object> requestBody = buildRequestBody(resume);
-            return executeHttpRequest(requestBody);
-        });
+    private final AtomicInteger requestCount = new AtomicInteger(); // 🔥 요청 수 카운트
+
+//  비동기 로직
+//    public CompletableFuture<FeedbackResponseDto> requestFeedback(Resume resume) {
+//        return CompletableFuture.supplyAsync(() -> {
+//            Map<String, Object> requestBody = buildRequestBody(resume);
+//            return executeHttpRequest(requestBody);
+//        });
+//    }
+
+
+
+
+    public FeedbackResponseDto requestFeedback(Resume resume) {
+        long startTime = System.nanoTime(); // ⏳ 시작 시간 측정
+        requestCount.incrementAndGet();  // 요청 수 증가
+
+        System.out.println("📌 현재 요청 수: " + requestCount.get());
+
+        Map<String, Object> requestBody = buildRequestBody(resume);
+        FeedbackResponseDto response = executeHttpRequest(requestBody);
+
+        long endTime = System.nanoTime(); // ⏳ 종료 시간 측정
+        double elapsedTime = (endTime - startTime) / 1_000_000.0; // ms 변환
+
+        System.out.println("📌 AI 응답 속도: " + elapsedTime + "ms");
+        return response;
     }
 
-    /**
-     * OpenAI 요청 바디 생성
-     *
-     * @param resume 이력서 객체
-     * @return Map<String, Object> 요청 바디
-     */
+//    public FeedbackResponseDto requestFeedback(Resume resume) {
+//        Map<String, Object> requestBody = buildRequestBody(resume);
+//        return executeHttpRequest(requestBody);
+//    }
+
     private Map<String, Object> buildRequestBody(Resume resume) {
         String prompt = createPrompt(resume);
         Map<String, Object> requestBody = new HashMap<>();
@@ -66,32 +79,34 @@ public class AiFeedbackService {
         return requestBody;
     }
 
-    /**
-     * OpenAI 요청 프롬프트 생성
-     *
-     * @param resume 이력서 객체
-     * @return String 생성된 프롬프트
-     */
     private String createPrompt(Resume resume) {
-        return """
-                아래는 이력서 검토 요청입니다. 각 항목에 대해 간결하고 구체적인 피드백을 주세요. 각 항목은 16줄 이내로 작성해주세요:
+        String prompt = """
+            당신은 전문적인 이력서 리뷰어입니다.\s
+            아래 이력서를 분석하고, 각 항목별로 구체적인 피드백을 JSON 형식으로 제공합니다.
 
-                1. 자기소개: 본인의 강점과 역할을 중심으로 소개 내용을 작성해주세요.
-                2. 기술 스택: 사용한 기술이 어떤지 설명해주세요.
-                3. 경력: 과거 직무에서 수행한 역할과 성과를 중심으로 작성해주세요.
-                4. 프로젝트: 수행한 프로젝트의 주요 내용, 본인의 기여도 및 성과를 설명해주세요.
-                5. 대외활동: 참여한 활동과 이를 통해 얻은 경험 및 성장 내용을 작성해주세요.
+            ### 요청 형식:
+            - 각 항목별로 상세한 피드백을 JSON 객체 형태로 작성합니다.
+            - 반드시 아래 JSON 형식을 지킵니다.
+            - 각각의 항목에 대해 하나하나 자세히 글이 많게 작성합니다.
 
-                이력서 내용:
-                """ + resume.toString();
+            ### 응답 예시:
+            {
+              "자기소개": "지원하는 직무와 연관성을 더 강조하면 좋습니다.",
+              "기술 스택": "추가하면 좋은 기술로 SQL, Redis 등이 있습니다.",
+              "경력": "프로젝트별 기여도를 더 구체적으로 작성하면 좋습니다.",
+              "프로젝트": "기술적 성과를 수치로 표현하면 더 좋습니다.",
+              "대외활동": "업무와 관련된 경험을 추가하면 더욱 효과적입니다."
+            }
+
+            이제 아래 이력서를 분석하고, 위 JSON 형식으로 피드백을 제공합니다.
+
+            이력서 내용:
+            """ + resume.toString();
+
+        System.out.println("📌📌 생성된 프롬프트: \n" + prompt);
+        return prompt;
     }
 
-    /**
-     * HTTP 요청 실행
-     *
-     * @param requestBody 요청 바디
-     * @return FeedbackResponseDto 피드백 응답 객체
-     */
     private FeedbackResponseDto executeHttpRequest(Map<String, Object> requestBody) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost post = createHttpPost(requestBody);
@@ -104,13 +119,13 @@ public class AiFeedbackService {
         }
     }
 
-    /**
-     * HTTP POST 객체 생성
-     *
-     * @param requestBody 요청 바디
-     * @return HttpPost 생성된 HTTP POST 객체
-     */
     private HttpPost createHttpPost(Map<String, Object> requestBody) throws IOException {
+        String requestJson = new ObjectMapper().writeValueAsString(requestBody);
+
+        // 요청 JSON 확인
+        System.out.println("📌 OpenAI 요청 데이터: " + requestJson);
+
+
         HttpPost post = new HttpPost(apiUrl);
         post.setHeader("Authorization", "Bearer " + apiKey);
         post.setHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType());
@@ -118,14 +133,12 @@ public class AiFeedbackService {
         return post;
     }
 
-    /**
-     * OpenAI 응답 파싱
-     *
-     * @param responseBody 응답 본문
-     * @return FeedbackResponseDto 파싱된 응답 객체
-     */
     private FeedbackResponseDto parseOpenAiResponse(String responseBody) {
         try {
+            // 응답 JSON 확인
+            System.out.println("📌📌 OpenAI 응답 데이터: " + responseBody);
+
+
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(responseBody);
 
@@ -143,30 +156,53 @@ public class AiFeedbackService {
         }
     }
 
-    /**
-     * OpenAI 응답에서 항목 추출
-     *
-     * @param content 응답 내용
-     * @return Map<String, String> 추출된 항목 맵
-     */
     private Map<String, String> extractFeedback(String content) {
-        Map<String, String> feedbackMap = new HashMap<>();
-        Pattern pattern = Pattern.compile("(?m)^([가-힣a-zA-Z ]+):\\s*(.*?)(?=^[가-힣a-zA-Z ]+:|$)", Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(content);
+        if (content == null || content.trim().isEmpty()) {
+            System.err.println("❌ OpenAI 응답이 비어 있습니다.");
+            return getDefaultFeedback();
+        }
 
-        while (matcher.find()) {
-            feedbackMap.put(matcher.group(1).trim(), matcher.group(2).trim());
+        // 🔥 JSON 응답이면 파싱 진행
+        if (content.trim().startsWith("{")) {
+            System.out.println("📌📌 JSON 형식 응답 감지! → JSON 파싱 시도");
+            return parseJsonFeedback(content);
+        }
+
+        System.err.println("❌ OpenAI 응답이 JSON 형식이 아닙니다.");
+        return getDefaultFeedback();
+    }
+
+    private Map<String, String> parseJsonFeedback(String content) {
+        Map<String, String> feedbackMap = new HashMap<>();
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(content);
+
+            feedbackMap.put("자기소개", rootNode.path("자기소개").asText("자기소개 없음"));
+            feedbackMap.put("기술 스택", rootNode.path("기술 스택").asText("기술 스택 없음"));
+            feedbackMap.put("경력", rootNode.path("경력").asText("경력 없음"));
+            feedbackMap.put("프로젝트", rootNode.path("프로젝트").asText("프로젝트 없음"));
+            feedbackMap.put("대외활동", rootNode.path("대외활동").asText("대외활동 없음"));
+
+        } catch (Exception e) {
+            System.err.println("❌ JSON 파싱 오류: " + e.getMessage());
+            return getDefaultFeedback(); // 기본 피드백 반환
         }
 
         return feedbackMap;
     }
 
-    /**
-     * 피드백 DTO 생성
-     *
-     * @param feedbackMap 추출된 피드백 맵
-     * @return FeedbackResponseDto 생성된 피드백 DTO
-     */
+    private Map<String, String> getDefaultFeedback() {
+        Map<String, String> defaultFeedback = new HashMap<>();
+        defaultFeedback.put("자기소개", "데이터 없음");
+        defaultFeedback.put("기술 스택", "데이터 없음");
+        defaultFeedback.put("경력", "데이터 없음");
+        defaultFeedback.put("프로젝트", "데이터 없음");
+        defaultFeedback.put("대외활동", "데이터 없음");
+        return defaultFeedback;
+    }
+
     private FeedbackResponseDto buildFeedbackResponse(Map<String, String> feedbackMap) {
         return new FeedbackResponseDto(
                 feedbackMap.getOrDefault("자기소개", "자기소개 없음"),

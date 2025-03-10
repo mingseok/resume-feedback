@@ -19,20 +19,11 @@ public class FileUploadController {
 
     private final ResumeProcessingService resumeProcessingService;
 
-    /**
-     * 업로드 페이지를 보여줍니다.
-     */
     @GetMapping("/")
     public String showUploadPage() {
         return "upload";
     }
 
-    /**
-     * 파일 업로드를 처리하고 결과를 보여줍니다.
-     *
-     * @param file  업로드된 파일
-     * @param model 모델 객체
-     */
     @PostMapping("/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file, Model model) {
         try {
@@ -49,9 +40,6 @@ public class FileUploadController {
         }
     }
 
-    /**
-     * 결과 페이지를 보여줍니다.
-     */
     @GetMapping("/result")
     public String showResultPage() {
         return "result";

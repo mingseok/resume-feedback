@@ -1,132 +1,135 @@
 package com.jobprep.resume_feedback.service;
 
-import com.sun.management.OperatingSystemMXBean;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import net.sourceforge.tess4j.Tesseract;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
-import org.springframework.core.io.ResourceLoader;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
+import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.nio.file.Paths;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
 public class PdfTextExtractorService {
 
-    private final ResourceLoader resourceLoader;
     private final Tesseract tesseract;
 
-    /**
-     * Tesseract 초기화 (데이터 경로 및 언어 설정)
-     */
     @PostConstruct
     public void init() {
         try {
-            String tessdataPath = Paths.get(resourceLoader.getResource("classpath:tessdata").getURI()).toString();
-            tesseract.setDatapath(tessdataPath);
-            tesseract.setLanguage("kor+eng");  // 한국어와 영어 동시 인식
-            tesseract.setPageSegMode(3);  // PSM 설정 (기본 페이지 세분화 모드)
-        } catch (IOException e) {
-            throw new RuntimeException("TESSDATA_PREFIX 설정 중 오류 발생: " + e.getMessage(), e);
+            File tessdataDir = new File(System.getProperty("java.io.tmpdir"), "tessdata");
+            if (!tessdataDir.exists()) {
+                tessdataDir.mkdirs();
+            }
+
+            tesseract.setDatapath(System.getProperty("java.io.tmpdir") + "/tessdata");
+            tesseract.setPageSegMode(1);
+            tesseract.setOcrEngineMode(1);
+            tesseract.setVariable("user_defined_dpi", "300");
+        } catch (Exception e) {
+            throw new RuntimeException("Tesseract 초기화 오류: " + e.getMessage(), e);
         }
     }
 
-    /**
-     * PDF 파일에서 텍스트를 추출합니다.
-     *
-     * @param filePath PDF 파일 경로
-     * @return 추출된 텍스트
-     */
     public String extractTextFromPdf(String filePath) {
         try (PDDocument document = PDDocument.load(new File(filePath))) {
-            // 파일 크기에 따라 적절한 DPI 값 계산
-            long fileSize = new File(filePath).length();
-            int dpi = determineDpi(fileSize);
+            String text = new PDFTextStripper().getText(document).trim();
+            if (!text.isEmpty()) {
+                System.out.println("📌 텍스트 기반 PDF 감지됨 → OCR 대신 PDFTextStripper 사용");
+                return text;
+            }
 
+            int dpi = determineDpi(new File(filePath).length());
             PDFRenderer renderer = new PDFRenderer(document);
 
-            // 각 페이지의 텍스트를 추출하여 합치기
             return IntStream.range(0, document.getNumberOfPages())
                     .mapToObj(page -> extractTextFromPage(renderer, page, dpi))
-                    .reduce("", (text1, text2) -> text1 + "\n" + text2);
+                    .collect(Collectors.joining("\n"))
+                    .replaceAll("\\s+", " ")
+                    .trim();
         } catch (IOException e) {
             throw new RuntimeException("PDF 파일 로드 중 오류 발생: " + e.getMessage(), e);
         }
     }
 
-    /**
-     * 파일 크기 및 CPU 사용량을 기반으로 동적으로 DPI를 결정합니다.
-     *
-     * @param fileSize 파일 크기 (바이트 단위)
-     * @return 결정된 DPI 값
-     */
     private int determineDpi(long fileSize) {
-        if (isCpuUsageHigh()) { // CPU 사용량이 높은 경우 최소 DPI로 설정
-            return 200;
-        }
-
-        if (fileSize <= 500 * 1024) { // 500KB 이하
-            return 200;
-        } else if (fileSize <= 1024 * 1024) { // 500KB ~ 1MB
-            return 250;
-        } else { // 1MB 이상
-            return 300;
-        }
+        return 300;
     }
 
-    /**
-     * PDF의 특정 페이지에서 OCR을 통해 텍스트를 추출합니다.
-     *
-     * @param renderer PDFRenderer 객체
-     * @param page     페이지 번호 (0부터 시작)
-     * @param dpi      페이지를 이미지로 변환할 때 사용할 DPI 값
-     * @return OCR로 추출한 정규화된 텍스트
-     */
     private String extractTextFromPage(PDFRenderer renderer, int page, int dpi) {
         try {
-            // 페이지를 이미지로 렌더링
-            BufferedImage image = renderer.renderImageWithDPI(page, dpi, ImageType.BINARY);
-            // OCR로 텍스트 추출 및 정규화
-            return normalizeText(tesseract.doOCR(image));
+            BufferedImage image = renderer.renderImageWithDPI(page, dpi, ImageType.RGB);
+            if (image == null) {
+                System.out.println("PDF 페이지 렌더링 실패: page=" + page);
+                return "";
+            }
+            return extractTextFromImage(image);
         } catch (Exception e) {
-            throw new RuntimeException("페이지 " + page + " 텍스트 추출 중 오류 발생: " + e.getMessage(), e);
+            throw new RuntimeException("PDF 페이지 OCR 중 오류 발생: " + e.getMessage(), e);
         }
     }
 
-    /**
-     * 현재 시스템의 CPU 사용량이 높은지 확인합니다.
-     *
-     * @return CPU 사용량이 80%를 초과하면 true, 그렇지 않으면 false
-     */
-    private boolean isCpuUsageHigh() {
+    private String extractTextFromImage(BufferedImage image) {
         try {
-            // 시스템 CPU 정보를 가져옴
-            OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-            double cpuLoad = osBean.getCpuLoad(); // CPU 사용률 (0.0 ~ 1.0)
-            return cpuLoad > 0.8; // CPU 사용량이 80% 초과 여부 확인
+            BufferedImage preprocessedImage = preprocessImage(image);
+            return tesseract.doOCR(preprocessedImage).replaceAll("\\s+", " ").trim();
         } catch (Exception e) {
-            System.err.println("CPU 사용량 확인 중 오류 발생: " + e.getMessage());
-            return false; // 예외 발생 시 기본적으로 false 반환
+            throw new RuntimeException("OCR 처리 중 오류 발생: " + e.getMessage(), e);
         }
     }
 
-    /**
-     * 텍스트를 정규화하여 불필요한 공백과 특수문자를 제거합니다.
-     *
-     * @param text 원본 텍스트
-     * @return 정규화된 텍스트
-     */
-    private String normalizeText(String text) {
-        return text.replaceAll("[^가-힣a-zA-Z0-9\\s]", "") // 한글, 영어, 숫자, 공백만 유지
-                .replaceAll("\\s{2,}", " ")               // 중복 공백 제거
-                .trim();
+    private BufferedImage preprocessImage(BufferedImage image) {
+        BufferedImage grayImage = toGrayscale(image);
+        BufferedImage contrastEnhanced = adjustContrast(grayImage, 1.8f, 20); // ✅ 대비 조정 값 변경
+        return applyGaussianBlur(contrastEnhanced, 2); // ✅ 블러 강도 조정
+    }
+
+    private BufferedImage toGrayscale(BufferedImage image) {
+        BufferedImage grayImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        Graphics2D g = grayImage.createGraphics();
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+        return grayImage;
+    }
+
+    private BufferedImage adjustContrast(BufferedImage image, float scaleFactor, float offset) {
+        RescaleOp rescaleOp = new RescaleOp(scaleFactor, offset, null);
+        BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        rescaleOp.filter(image, result);
+        return result;
+    }
+
+    private BufferedImage applyGaussianBlur(BufferedImage image, int radius) {
+        int size = radius * 2 + 1;
+        float[] matrix = new float[size * size];
+        float sigma = radius / 3.0f;
+        float sum = 0;
+
+        for (int y = -radius; y <= radius; y++) {
+            for (int x = -radius; x <= radius; x++) {
+                float value = (float) Math.exp(-(x * x + y * y) / (2 * sigma * sigma));
+                matrix[(y + radius) * size + (x + radius)] = value;
+                sum += value;
+            }
+        }
+
+        for (int i = 0; i < matrix.length; i++) {
+            matrix[i] /= sum;
+        }
+
+        Kernel kernel = new Kernel(size, size, matrix);
+        ConvolveOp op = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
+        return op.filter(image, null);
     }
 }

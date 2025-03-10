@@ -3,79 +3,79 @@ package com.jobprep.resume_feedback.service;
 import com.jobprep.resume_feedback.domain.Resume;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Set;
 
 @Service
 public class ResumeParserService {
 
-    /**
-     * 추출된 텍스트를 이력서 객체로 변환
-     *
-     * @param extractedText OCR로 추출된 텍스트
-     * @return Resume 변환된 이력서 객체
-     */
     public Resume parseExtractedTextToResume(String extractedText) {
+        extractedText = extractedText.replaceAll("\r\n", "\n").replaceAll("\r", "\n");
+        extractedText = cleanExtractedText(extractedText);
         String[] lines = extractedText.split("\n");
-        String selfIntroduction = extractSection(lines, "자기소개", "");
-        String technicalSkills = extractSection(lines, "기술 스택", "Technical Skills");
-        String workExperience = extractPattern(lines, "(경력|Work Experience)");
-        String activities = extractPattern(lines, "(대외활동|Activities)");
+        Set<String> sectionTitles = Set.of("자기소개", "기술 스택", "경력", "대외활동", "프로젝트");
+        String selfIntroduction = extractSection(lines, "자기소개", sectionTitles);
+        String technicalSkills = extractSection(lines, "기술 스택", sectionTitles);
+        String workExperience = extractSection(lines, "경력", sectionTitles);
+        String activities = extractSection(lines, "대외활동", sectionTitles);
         List<String> projects = extractProjects(lines);
-
         return new Resume(selfIntroduction, technicalSkills, workExperience, projects, activities);
     }
 
-    /**
-     * 특정 섹션을 추출
-     *
-     * @param lines          텍스트 라인 배열
-     * @param sectionKey     섹션 키워드
-     * @param alternativeKey 대체 키워드
-     * @return String 추출된 섹션 내용
-     */
-    private String extractSection(String[] lines, String sectionKey, String alternativeKey) {
+    private String extractSection(String[] lines, String sectionName, Set<String> allSections) {
+        StringBuilder sectionContent = new StringBuilder();
+        boolean isSectionFound = false;
+
         for (String line : lines) {
-            if (line.startsWith(sectionKey) || line.toLowerCase().contains(alternativeKey.toLowerCase())) {
-                return line.replace(sectionKey + ":", "").trim();
+            if (line.trim().equalsIgnoreCase(sectionName)) {
+                isSectionFound = true;
+                continue;
+            }
+
+            if (isSectionFound) {
+                if (allSections.contains(line.trim())) break;
+                sectionContent.append(line).append(" ");
             }
         }
-        return "";
+        return sectionContent.toString().trim();
     }
 
-    /**
-     * 정규식을 사용하여 섹션을 추출
-     *
-     * @param lines   텍스트 라인 배열
-     * @param pattern 정규식 패턴
-     * @return String 추출된 섹션 내용
-     */
-    private String extractPattern(String[] lines, String pattern) {
-        Pattern compiledPattern = Pattern.compile(pattern + ":?\\s*(.*)", Pattern.CASE_INSENSITIVE);
-        for (String line : lines) {
-            Matcher matcher = compiledPattern.matcher(line);
-            if (matcher.find()) {
-                return matcher.group(1).trim();
-            }
-        }
-        return "";
+    private String cleanExtractedText(String text) {
+        return text.replaceAll("\\s{2,}", " ") // 여러 공백을 하나로
+                .replaceAll("(?i)(데이터 통해 확인\\s*){2,}", "데이터 통해 확인") // 중복된 문구 제거
+                .trim();
     }
 
-    /**
-     * 프로젝트 목록을 추출
-     *
-     * @param lines 텍스트 라인 배열
-     * @return List<String> 프로젝트 목록
-     */
     private List<String> extractProjects(String[] lines) {
-        StringBuilder projects = new StringBuilder();
+        List<String> projects = new ArrayList<>();
+        boolean foundProjects = false;
+        StringBuilder currentProject = new StringBuilder();
+
         for (String line : lines) {
-            if (!line.startsWith("자기소개") && !line.startsWith("기술 스택") &&
-                    !line.toLowerCase().contains("work experience") && !line.toLowerCase().contains("activities")) {
-                projects.append(line).append("\n");
+            if (line.trim().equalsIgnoreCase("포트폴리오")) break; // 프로젝트 종료
+            if (line.trim().equalsIgnoreCase("프로젝트")) {
+                foundProjects = true;
+                continue;
+            }
+
+            if (foundProjects) {
+                if (line.trim().isEmpty()) {
+                    // 새 프로젝트 시작되면 추가하고 초기화
+                    if (!currentProject.toString().isEmpty()) {
+                        projects.add(currentProject.toString().trim());
+                        currentProject.setLength(0);
+                    }
+                } else {
+                    currentProject.append(line).append("\n");
+                }
             }
         }
-        return List.of(projects.toString().split("\n"));
+
+        if (!currentProject.toString().isEmpty()) {
+            projects.add(currentProject.toString().trim());
+        }
+
+        return projects;
     }
 }
