@@ -31,29 +31,15 @@ ext {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation "org.springframework.ai:spring-ai-openai-spring-boot-starter:${springAiVersion}"
-
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
 	implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
 	implementation 'org.apache.httpcomponents.core5:httpcore5:5.3.1'
 
-	implementation 'org.ddogleg:ddogleg:0.20'
-
-	implementation 'org.boofcv:boofcv-core:0.43'
-	implementation 'org.boofcv:boofcv-ip:0.43'   // 이미지 처리 관련
-	implementation 'org.boofcv:boofcv-feature:0.43' // 특징 추출 관련
-
 	// PDF 파일 처리를 위한 Apache PDFBox 의존성
 	implementation 'org.apache.pdfbox:pdfbox:2.0.27'
-
-	// Tika (텍스트 추출)
-	implementation 'org.apache.tika:tika-core:1.24.1'
-
-	// OpenCV
-	implementation 'org.openpnp:opencv:4.5.1-2'
 
 	// Tesseract OCR (Tess4J)
 	implementation 'net.sourceforge.tess4j:tess4j:5.4.0'
@@ -64,13 +50,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	// JNA (Tess4J와 호환되는 버전 유지)
-	implementation 'net.java.dev.jna:jna:5.8.0'
-
 	implementation 'org.springframework.boot:spring-boot-autoconfigure'
 	implementation 'org.springframework:spring-context'
 
-	implementation 'org.bytedeco:opencv-platform:4.5.1-1.5.5'
+	implementation 'com.squareup.okhttp3:okhttp:4.11.0'
 }
 
 dependencyManagement {
