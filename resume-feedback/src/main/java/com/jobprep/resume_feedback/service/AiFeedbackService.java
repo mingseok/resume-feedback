@@ -82,37 +82,21 @@ public class AiFeedbackService {
         return prompt;
     }
 
-    public FeedbackResponseDto executeHttpRequest(Map<String, Object> requestBody) {
+    private FeedbackResponseDto executeHttpRequest(Map<String, Object> requestBody) {
         int retryCount = 0;
-        int maxRetries = 3;  // 최대 재시도 횟수
+        int maxRetries = 3; // 최대 재시도 횟수
 
         while (retryCount < maxRetries) {
-            long startTime = System.nanoTime(); // 📌 요청 시작 시간
-
             try {
                 HttpPost post = createHttpPost(requestBody);
 
                 try (CloseableHttpResponse response = httpClient.execute(post)) {
-                    long endTime = System.nanoTime(); // 📌 응답 완료 시간 추가
-                    double elapsedTime = (endTime - startTime) / 1_000_000.0;
-                    System.out.println("📌 OpenAI API 요청 완료 - 응답 시간: " + String.format("%.3f", elapsedTime) + "ms");
-
-
                     String responseBody = new String(response.getEntity().getContent().readAllBytes());
-
-
-                    // ✅ 응답 코드 및 상태 출력 추가
-                    System.out.println("📌 OpenAI 응답 코드: " + response.getCode());
-
-
-                    // JSON 파싱 시도
                     FeedbackResponseDto result = parseOpenAiResponse(responseBody);
-
-                    // 정상적인 응답인지 확인
                     if (isValidResponse(result)) {
-                        return result; // 성공하면 즉시 반환
+                        return result;
                     } else {
-                        System.err.println("❌ JSON 구조가 예상과 다름, 재시도...");
+                        System.err.println("XX JSON 구조가 예상과 다름, 재시도...");
                     }
                 }
             } catch (IOException e) {
@@ -122,14 +106,13 @@ public class AiFeedbackService {
             retryCount++;
             if (retryCount < maxRetries) {
                 try {
-                    Thread.sleep(1000); // 1초 대기 후 재시도
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }
         }
 
-        System.err.println("최종적으로 JSON 파싱 실패. 기본 피드백 반환.");
         return getDefaultFeedbackResponse();
     }
 
@@ -176,10 +159,6 @@ public class AiFeedbackService {
     private HttpPost createHttpPost(Map<String, Object> requestBody) throws IOException {
         String requestJson = new ObjectMapper().writeValueAsString(requestBody);
 
-        // 요청 JSON 확인
-        System.out.println("OpenAI 요청 데이터: " + requestJson);
-
-
         HttpPost post = new HttpPost(apiUrl);
         post.setHeader("Authorization", "Bearer " + apiKey);
         post.setHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType());
@@ -192,39 +171,36 @@ public class AiFeedbackService {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(responseBody);
 
-            // 📌 OpenAI 응답 확인 (디버깅용)
-            System.out.println("📌 OpenAI 응답 데이터: " + responseBody);
-
             // choices 배열이 존재하는지 먼저 확인
             JsonNode choicesNode = rootNode.path("choices");
             if (!choicesNode.isArray() || choicesNode.isEmpty()) {
-                System.err.println("❌ OpenAI 응답이 올바르지 않음: choices 배열 없음");
+                System.err.println("OpenAI 응답이 올바르지 않음: choices 배열 없음");
                 return null; // 재시도 트리거
             }
 
             // choices[0]이 존재하는지 확인
             JsonNode firstChoice = choicesNode.get(0);
             if (firstChoice == null || !firstChoice.has("message")) {
-                System.err.println("❌ OpenAI 응답이 올바르지 않음: choices[0]에 message 없음");
+                System.err.println("OpenAI 응답이 올바르지 않음: choices[0]에 message 없음");
                 return null; // 재시도 트리거
             }
 
             // content 필드가 존재하는지 확인
             String content = firstChoice.path("message").path("content").asText(null);
             if (content == null || content.trim().isEmpty()) {
-                System.err.println("❌ OpenAI 응답에서 content 필드가 비어 있음");
+                System.err.println("OpenAI 응답에서 content 필드가 비어 있음");
                 return null; // 재시도 트리거
             }
 
             // JSON 형식 검사 (응답이 JSON이 아닐 경우 대비)
             if (!content.trim().startsWith("{")) {
-                System.err.println("❌ OpenAI 응답이 JSON 형식이 아님!");
+                System.err.println("OpenAI 응답이 JSON 형식이 아님!");
                 return null; // JSON 형식이 아니면 재시도 유도
             }
 
             // JSON 유효성 검증 추가 (필수 키 확인)
             if (!isValidJsonResponse(content)) {
-                System.err.println("❌ JSON 응답이 올바르지 않음. 재시도 진행...");
+                System.err.println("JSON 응답이 올바르지 않음. 재시도 진행...");
                 return null; // 실패 처리하여 재시도 트리거
             }
 
@@ -252,7 +228,7 @@ public class AiFeedbackService {
             feedbackMap.put("대외활동", rootNode.path("대외활동").asText("대외활동 없음"));
 
         } catch (Exception e) {
-            System.err.println("❌ JSON 파싱 오류: " + e.getMessage());
+            System.err.println("JSON 파싱 오류: " + e.getMessage());
             return getDefaultFeedback(); // 기본 피드백 반환
         }
 
