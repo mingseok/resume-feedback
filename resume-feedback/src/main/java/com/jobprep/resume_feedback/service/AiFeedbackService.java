@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,20 +31,14 @@ public class AiFeedbackService {
     @Value("${spring.ai.openai.model}")
     private String model;
 
-//  비동기 로직
-//    public CompletableFuture<FeedbackResponseDto> requestFeedback(Resume resume) {
-//        return CompletableFuture.supplyAsync(() -> {
-//            Map<String, Object> requestBody = buildRequestBody(resume);
-//            return executeHttpRequest(requestBody);
-//        });
-//    }
+    private final CloseableHttpClient httpClient;
 
     public FeedbackResponseDto requestFeedback(Resume resume) {
         Map<String, Object> requestBody = buildRequestBody(resume);
         return executeHttpRequest(requestBody);
     }
 
-    private Map<String, Object> buildRequestBody(Resume resume) {
+    public Map<String, Object> buildRequestBody(Resume resume) {
         String prompt = createPrompt(resume);
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", model);
@@ -89,15 +82,28 @@ public class AiFeedbackService {
         return prompt;
     }
 
-    private FeedbackResponseDto executeHttpRequest(Map<String, Object> requestBody) {
+    public FeedbackResponseDto executeHttpRequest(Map<String, Object> requestBody) {
         int retryCount = 0;
         int maxRetries = 3;  // 최대 재시도 횟수
 
         while (retryCount < maxRetries) {
-            try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            long startTime = System.nanoTime(); // 📌 요청 시작 시간
+
+            try {
                 HttpPost post = createHttpPost(requestBody);
+
                 try (CloseableHttpResponse response = httpClient.execute(post)) {
+                    long endTime = System.nanoTime(); // 📌 응답 완료 시간 추가
+                    double elapsedTime = (endTime - startTime) / 1_000_000.0;
+                    System.out.println("📌 OpenAI API 요청 완료 - 응답 시간: " + String.format("%.3f", elapsedTime) + "ms");
+
+
                     String responseBody = new String(response.getEntity().getContent().readAllBytes());
+
+
+                    // ✅ 응답 코드 및 상태 출력 추가
+                    System.out.println("📌 OpenAI 응답 코드: " + response.getCode());
+
 
                     // JSON 파싱 시도
                     FeedbackResponseDto result = parseOpenAiResponse(responseBody);
@@ -186,11 +192,32 @@ public class AiFeedbackService {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(responseBody);
 
-            // JSON 응답에서 content 추출
-            String content = rootNode.path("choices").get(0).path("message").path("content").asText();
+            // 📌 OpenAI 응답 확인 (디버깅용)
+            System.out.println("📌 OpenAI 응답 데이터: " + responseBody);
 
-            // JSON 형식 검사
-            if (content == null || !content.trim().startsWith("{")) {
+            // choices 배열이 존재하는지 먼저 확인
+            JsonNode choicesNode = rootNode.path("choices");
+            if (!choicesNode.isArray() || choicesNode.isEmpty()) {
+                System.err.println("❌ OpenAI 응답이 올바르지 않음: choices 배열 없음");
+                return null; // 재시도 트리거
+            }
+
+            // choices[0]이 존재하는지 확인
+            JsonNode firstChoice = choicesNode.get(0);
+            if (firstChoice == null || !firstChoice.has("message")) {
+                System.err.println("❌ OpenAI 응답이 올바르지 않음: choices[0]에 message 없음");
+                return null; // 재시도 트리거
+            }
+
+            // content 필드가 존재하는지 확인
+            String content = firstChoice.path("message").path("content").asText(null);
+            if (content == null || content.trim().isEmpty()) {
+                System.err.println("❌ OpenAI 응답에서 content 필드가 비어 있음");
+                return null; // 재시도 트리거
+            }
+
+            // JSON 형식 검사 (응답이 JSON이 아닐 경우 대비)
+            if (!content.trim().startsWith("{")) {
                 System.err.println("❌ OpenAI 응답이 JSON 형식이 아님!");
                 return null; // JSON 형식이 아니면 재시도 유도
             }
