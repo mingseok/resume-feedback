@@ -1,4 +1,4 @@
-package com.jobprep.resume_feedback.config;
+package com.jobprep.resume_feedback.common.config;
 
 import net.sourceforge.tess4j.Tesseract;
 import org.springframework.context.annotation.Bean;
